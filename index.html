@@ -1,0 +1,634 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Swima Family</title>
+<meta name="description" content="L'arbre familial des Swima">
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='12' fill='%23B4552E'/%3E%3Cpath d='M12 20v-7M12 13c-2.6 0-5-1.7-5-4.6S9.4 4 12 4s5 1.7 5 4.4S14.6 13 12 13z' fill='none' stroke='%23FFF7EE' stroke-width='1.8' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,700;6..12,800&display=swap">
+<style>
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{margin:0}
+img{max-width:100%}
+[hidden]{display:none!important}
+
+/* Layout : un album de famille chaleureux. Bandeau d'accueil, onglets collants, arbre posé sur un fond doux, une couleur par branche. */
+:root{
+  --bg:#F7EFE6; --surface:#FFFCF8; --sunk:#F1E5D8; --fg:#2E241D; --muted:#7A6A5D; --line:#D9C6B3;
+  --accent:#B4552E; --accent-soft:#F6DDCF; --accent-fg:#FFFFFF;
+  --hero:#3B2A20; --hero-fg:#FBEFE3; --hero-muted:#D7BFA9;
+  --b0:#B4552E; --b1:#C98A1E; --b2:#2F7F78; --b3:#8E4F86; --b4:#5E7F2E; --b5:#C2466A;
+  --t0:#F6DDCF; --t1:#F7E8C6; --t2:#D6EBE8; --t3:#EEDDEA; --t4:#E1EBCF; --t5:#F6D9E1;
+  --pending:#C98A1E; --pending-soft:#F7E8C6; --danger:#A8382F;
+  --display:"Young Serif", Georgia, "Times New Roman", serif;
+  --body:"Nunito Sans", "Segoe UI", system-ui, sans-serif;
+  --r:16px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#1D1612; --surface:#2A211B; --sunk:#241C17; --fg:#F4E9DE; --muted:#BBA796; --line:#4A3B30;
+  --accent:#E8885D; --accent-soft:#4A2D20; --accent-fg:#1D1612;
+  --hero:#2E211A; --hero-fg:#FBEFE3; --hero-muted:#C9AE96;
+  --b0:#E8885D; --b1:#E6B252; --b2:#5FBDB3; --b3:#C88BC0; --b4:#9CC062; --b5:#EB7D9C;
+  --t0:#4A2D20; --t1:#47381A; --t2:#1E3E3B; --t3:#3E2A3C; --t4:#2F3C1E; --t5:#4A2430;
+  --pending:#E6B252; --pending-soft:#47381A; --danger:#EF8577; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#1D1612; --surface:#2A211B; --sunk:#241C17; --fg:#F4E9DE; --muted:#BBA796; --line:#4A3B30;
+  --accent:#E8885D; --accent-soft:#4A2D20; --accent-fg:#1D1612;
+  --hero:#2E211A; --hero-fg:#FBEFE3; --hero-muted:#C9AE96;
+  --b0:#E8885D; --b1:#E6B252; --b2:#5FBDB3; --b3:#C88BC0; --b4:#9CC062; --b5:#EB7D9C;
+  --t0:#4A2D20; --t1:#47381A; --t2:#1E3E3B; --t3:#3E2A3C; --t4:#2F3C1E; --t5:#4A2430;
+  --pending:#E6B252; --pending-soft:#47381A; --danger:#EF8577; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.55}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:1100px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+
+/* Bandeau */
+.hero{background:var(--hero);color:var(--hero-fg);position:relative;overflow:hidden}
+.hero canvas{position:absolute;inset:0;width:100%;height:100%;opacity:.55;pointer-events:none}
+.hero .wrap{position:relative;padding-block:28px 26px;display:flex;align-items:center;gap:18px}
+.crest{width:58px;height:58px;flex:none;border-radius:50%;background:var(--accent);display:grid;place-items:center;box-shadow:0 0 0 4px rgba(255,255,255,.12)}
+.crest svg{width:34px;height:34px}
+h1{font-family:var(--display);font-weight:400;font-size:clamp(1.9rem,6vw,2.6rem);margin:0;line-height:1.05;text-wrap:balance}
+.hero p{margin:4px 0 0;color:var(--hero-muted);font-size:.98rem}
+
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+nav{display:flex;gap:6px;padding-block:10px;overflow-x:auto}
+.tab{appearance:none;border:0;background:transparent;color:var(--muted);font:700 .98rem var(--body);padding:9px 16px;border-radius:999px;cursor:pointer;display:flex;align-items:center;gap:7px;white-space:nowrap}
+.tab:hover{color:var(--fg)}
+.tab[aria-selected="true"]{background:var(--accent);color:var(--accent-fg)}
+.tab:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.badge{background:var(--pending);color:var(--surface);font-size:.75rem;font-weight:800;border-radius:999px;padding:1px 8px;font-variant-numeric:tabular-nums}
+.tab[aria-selected="true"] .badge{background:var(--accent-fg);color:var(--accent)}
+
+.demo{font-size:.88rem;color:var(--muted);border:1px dashed var(--line);border-radius:var(--r);padding:10px 14px;margin-block:18px 6px;display:flex;gap:10px;justify-content:space-between;align-items:center;flex-wrap:wrap}
+.demo b{color:var(--fg)}
+.link{appearance:none;background:none;border:0;color:var(--accent);font:700 .88rem var(--body);cursor:pointer;padding:4px 0;text-decoration:underline}
+main{padding-block:4px 56px}
+section h2{font-family:var(--display);font-weight:400;font-size:1.55rem;margin:14px 0 4px}
+.lead{color:var(--muted);margin:0 0 16px;max-width:62ch}
+
+/* Branches */
+.legend{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 6px}
+.chip{display:inline-flex;align-items:center;gap:7px;font-size:.85rem;font-weight:700;padding:5px 12px 5px 8px;border-radius:999px;background:var(--surface);border:1px solid var(--line)}
+.chip i{width:12px;height:12px;border-radius:50%;background:var(--c)}
+.stats{display:flex;gap:20px;flex-wrap:wrap;font-size:.92rem;color:var(--muted);margin-bottom:12px}
+.stats b{color:var(--fg);font-family:var(--display);font-weight:400;font-size:1.25rem;margin-right:4px;font-variant-numeric:tabular-nums}
+
+/* Arbre */
+.tree-wrap{overflow-x:auto;padding:24px 0 28px;-webkit-overflow-scrolling:touch;background:var(--sunk);background-image:radial-gradient(var(--line) 1px,transparent 1.2px);background-size:22px 22px;border-radius:22px}
+.tree{width:max-content;margin:0 auto;padding:0 14px}
+.tree ul{display:flex;justify-content:center;padding:26px 0 0;margin:0;position:relative}
+.tree>ul{padding-top:0}
+.tree li{list-style:none;position:relative;padding:26px 7px 0;display:flex;flex-direction:column;align-items:center}
+.tree li::before,.tree li::after{content:"";position:absolute;top:0;right:50%;width:50%;height:26px;border-top:2.5px solid var(--lc,var(--line))}
+.tree li::after{right:auto;left:50%;border-left:2.5px solid var(--lc,var(--line))}
+.tree li:only-child::before,.tree li:only-child::after{display:none}
+.tree li:only-child{padding-top:0}
+.tree li:first-child::before,.tree li:last-child::after{border:0}
+.tree li:last-child::before{border-right:2.5px solid var(--lc,var(--line));border-radius:0 10px 0 0}
+.tree li:first-child::after{border-radius:10px 0 0 0}
+.tree ul ul::before{content:"";position:absolute;top:0;left:50%;height:26px;border-left:2.5px solid var(--pc,var(--line))}
+.tree>ul>li{padding-top:0}
+.tree>ul>li::before,.tree>ul>li::after{display:none}
+.couple{display:flex;align-items:center}
+.foyer{display:flex;flex-direction:column;align-items:center;gap:6px}
+.foyer-label{font-size:.72rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);background:var(--surface);border:1.5px solid var(--accent);border-radius:999px;padding:2px 10px}
+.tie{width:18px;height:2.5px;background:var(--line);position:relative}
+.tie::after{content:"";position:absolute;left:50%;top:50%;width:8px;height:8px;border-radius:50%;background:var(--accent);transform:translate(-50%,-50%)}
+.card{appearance:none;border:0;background:var(--surface);color:var(--fg);border-radius:var(--r);padding:0 0 12px;width:138px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:5px;font-family:var(--body);text-align:center;box-shadow:0 1px 0 var(--line),0 6px 16px -10px rgba(60,35,20,.35);overflow:hidden;transition:transform .15s ease}
+.card::before{content:"";display:block;width:100%;height:6px;background:var(--c);margin-bottom:8px}
+.card:hover{transform:translateY(-2px)}
+.card.new{box-shadow:0 0 0 3px var(--c),0 6px 16px -10px rgba(60,35,20,.35)}
+.avatar{width:52px;height:52px;border-radius:50%;background:var(--t,var(--accent-soft));color:var(--c,var(--accent));display:grid;place-items:center;font:400 1.15rem var(--display);overflow:hidden;flex:none;border:2px solid var(--c,var(--accent))}
+.avatar img{width:100%;height:100%;object-fit:cover}
+.card .pn{font-weight:800;font-size:1.05rem;line-height:1.15;padding:0 8px}
+.card .nn{font-weight:700;font-size:.74rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);line-height:1.1}
+.card .hb{display:inline-flex;align-items:center;gap:3px;font-size:.8rem;font-weight:700;color:var(--fg);padding:0 8px;line-height:1.2}
+.card .hb svg{width:12px;height:12px;flex:none;color:var(--c)}
+.card .yr{font-size:.78rem;font-weight:700;color:var(--c);background:var(--t);border-radius:999px;padding:1px 9px;font-variant-numeric:tabular-nums;margin-top:2px}
+.card .yr.dead::before{content:"✝ ";font-weight:400}
+
+/* Formulaire */
+form,.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px;max-width:640px;display:grid;gap:15px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:520px){.row{grid-template-columns:1fr}}
+label{display:grid;gap:5px;font-size:.88rem;font-weight:700;min-width:0}
+label .hint{font-weight:400;color:var(--muted)}
+input,select,textarea{font:400 1rem var(--body);color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:11px 12px;width:100%;min-width:0}
+textarea{min-height:90px;resize:vertical}
+.seg{display:flex;gap:8px;flex-wrap:wrap}
+.seg label{display:flex;align-items:center;gap:7px;border:1px solid var(--line);border-radius:999px;padding:8px 15px;cursor:pointer}
+.seg input{width:auto;margin:0;accent-color:var(--accent)}
+.seg label:has(input:checked){border-color:var(--accent);background:var(--accent-soft);color:var(--accent)}
+.err{color:var(--danger);font-size:.86rem;font-weight:700}
+.btn{appearance:none;border:0;border-radius:999px;padding:12px 22px;font:700 .98rem var(--body);cursor:pointer;background:var(--accent);color:var(--accent-fg)}
+.btn.soft{background:var(--accent-soft);color:var(--accent)}
+.btn.ghost{background:transparent;color:var(--fg);border:1px solid var(--line)}
+.btn.danger{background:transparent;color:var(--danger);border:1px solid var(--danger)}
+.btn.sm{padding:9px 16px;font-size:.88rem}
+.actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+
+/* Admin */
+.queue{display:grid;gap:16px;max-width:760px}
+.prop{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px;display:grid;gap:12px;position:relative;overflow:hidden}
+.prop::before{content:"";position:absolute;inset:0 auto 0 0;width:5px;background:var(--pending)}
+.prop-head{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:baseline}
+.pill{font-size:.74rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:3px 10px;border-radius:999px;background:var(--pending-soft);color:var(--pending)}
+.meta{font-size:.86rem;color:var(--muted)}
+.diff{font-size:.92rem;display:grid;gap:4px;background:var(--sunk);border-radius:10px;padding:10px 12px}
+.diff s{color:var(--muted)}
+.empty{color:var(--muted);background:var(--surface);border:1px dashed var(--line);border-radius:var(--r);padding:28px;text-align:center;max-width:760px}
+
+/* Fiche */
+.sheet-bg{position:fixed;inset:0;background:rgba(30,18,10,.5);z-index:20;display:flex;align-items:flex-end;justify-content:center}
+.sheet{background:var(--surface);color:var(--fg);width:100%;max-width:520px;border-radius:22px 22px 0 0;padding:0 0 calc(20px + env(safe-area-inset-bottom,0px));display:grid;gap:14px;max-height:88vh;overflow-y:auto}
+.sheet>*{margin-inline:max(20px,env(safe-area-inset-left,0px))}
+.sheet .cover{margin:0;height:84px;background:var(--c);position:relative}
+.sheet .top{display:flex;gap:14px;align-items:flex-end;margin-top:-52px;position:relative}
+.sheet .avatar{width:84px;height:84px;font-size:1.8rem;border-width:4px;border-color:var(--surface);background:var(--t);color:var(--c)}
+.sheet h3{font-family:var(--display);font-weight:400;font-size:1.55rem;margin:0;line-height:1.1}
+.sheet .nn{font-weight:800;letter-spacing:.12em;text-transform:uppercase;font-size:.8rem;color:var(--muted)}
+@media (min-width:700px){.sheet-bg{align-items:center}.sheet{border-radius:22px}}
+dl{display:grid;grid-template-columns:auto 1fr;gap:7px 16px;font-size:.98rem}
+dt{color:var(--muted)}dd{margin:0;font-weight:600}
+.story{background:var(--t);border-radius:var(--r);padding:14px 16px;font-size:.98rem;font-style:italic;position:relative}
+.story::before{content:"“";font-family:var(--display);font-size:2.4rem;line-height:0;color:var(--c);position:relative;top:.45em;margin-right:4px;font-style:normal}
+
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--hero);color:var(--hero-fg);padding:12px 20px;border-radius:999px;font-weight:700;font-size:.92rem;z-index:30;max-width:calc(100% - 32px);text-align:center}
+@media (prefers-reduced-motion:no-preference){.sheet{animation:up .24s ease-out}@keyframes up{from{transform:translateY(28px);opacity:.6}}}
+@media (prefers-reduced-motion:reduce){.card{transition:none}}
+
+.gate{max-width:480px;margin-block:28px}
+.gate h2{margin-top:0}
+.foot{margin-top:18px;text-align:center}
+.adminbar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px 16px;margin-bottom:8px;max-width:760px}
+.sub{font-family:var(--display);font-weight:400;font-size:1.2rem;margin:18px 0 4px}
+.admin-zone{border-top:1px dashed var(--line);padding-top:12px}
+.btn:disabled{opacity:.5;cursor:default}
+#tree-loading{margin-top:8px}
+</style>
+</head>
+<body>
+<div class="hero">
+  <canvas id="leaves" aria-hidden="true"></canvas>
+  <div class="wrap">
+    <div class="crest" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#FFF7EE" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22v-8"/><path d="M12 14c-3 0-6-2-6-5.5S9 3 12 3s6 2 6 5.5S15 14 12 14z"/><path d="M12 14l-3-3M12 12l3-3"/><path d="M8 22h8"/></svg></div>
+    <div><h1>Swima Family</h1><p>Nos racines, nos histoires</p></div>
+  </div>
+</div>
+
+<!-- Écran d'entrée : code famille -->
+<main class="wrap" id="gate-code" hidden>
+  <form id="code-form" class="gate" novalidate>
+    <h2>Bienvenue dans la famille</h2>
+    <p class="lead">Pour voir l'arbre, entrez le code famille partagé dans le groupe WhatsApp.</p>
+    <label>Code famille <input id="code-input" autocomplete="off" autocapitalize="off" spellcheck="false"></label>
+    <div class="err" id="code-err" hidden></div>
+    <div class="actions"><button class="btn" type="submit" id="code-btn">Entrer</button></div>
+  </form>
+</main>
+
+<div id="app" hidden>
+<header>
+  <div class="wrap">
+    <nav role="tablist">
+      <button class="tab" role="tab" id="tab-arbre" data-view="arbre" aria-selected="true">L'arbre</button>
+      <button class="tab" role="tab" id="tab-proposer" data-view="proposer" aria-selected="false">Proposer une info</button>
+      <button class="tab" role="tab" id="tab-admin" data-view="admin" aria-selected="false">Admin <span class="badge" id="badge" hidden></span></button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <section id="view-arbre">
+    <h2>Notre arbre</h2>
+    <p class="lead">Chaque branche a sa couleur. Touchez une personne pour voir sa fiche, ajouter un enfant ou proposer une correction.</p>
+    <div class="stats" id="stats"></div>
+    <div class="legend" id="legend"></div>
+    <div class="tree-wrap" id="tree-wrap"><div class="tree" id="tree"></div></div>
+    <div class="empty" id="tree-empty" hidden>
+      <p style="margin:0 0 12px">L'arbre est encore vide. Il commence par le grand-père : c'est la première fiche à proposer.</p>
+      <button class="btn" id="empty-add">Ajouter le grand-père</button>
+    </div>
+    <div class="empty" id="tree-loading">Chargement de l'arbre…</div>
+    <p class="foot"><button class="link" id="forget-code">Changer de code famille</button></p>
+  </section>
+
+  <section id="view-proposer" hidden>
+    <h2>Proposer une info</h2>
+    <p class="lead">Votre proposition est envoyée à l'administrateur. Elle apparaîtra dans l'arbre dès qu'il l'aura validée.</p>
+    <form id="form" novalidate>
+      <div class="seg" role="radiogroup" aria-label="Type de proposition">
+        <label><input type="radio" name="kind" id="k-new" value="new" checked> Ajouter une personne</label>
+        <label><input type="radio" name="kind" id="k-fix" value="fix"> Corriger une fiche</label>
+      </div>
+      <label id="wrap-target" hidden>Fiche à corriger
+        <select id="f-target"></select>
+      </label>
+      <div class="row">
+        <label>Prénom <input id="f-prenom" autocomplete="off"></label>
+        <label>Nom <input id="f-nom" autocomplete="off"></label>
+      </div>
+      <label>Où vit-il ou elle aujourd'hui ? <span class="hint">ville et pays</span><input id="f-habite" placeholder="ex. Lille, France"></label>
+      <div class="row">
+        <label>Naissance <span class="hint">année ou date</span><input id="f-naissance" placeholder="ex. 1974"></label>
+        <label>Décès <span class="hint">si concerné</span><input id="f-deces"></label>
+      </div>
+      <label>Lieu de naissance <span class="hint">facultatif, si connu</span><input id="f-lieu"></label>
+      <div id="wrap-links" style="display:grid;gap:15px">
+        <div class="row">
+          <label>Enfant de <select id="f-parent"></select></label>
+          <label>et de <select id="f-parent2"></select></label>
+        </div>
+        <label>Marié(e) à <select id="f-conjoint"></select></label>
+      </div>
+      <label>Souvenir ou anecdote <span class="hint">facultatif</span><textarea id="f-anecdote"></textarea></label>
+      <label>Photo <span class="hint">facultatif</span><input type="file" id="f-photo" accept="image/*"></label>
+      <label>Votre prénom <span class="hint">pour que l'administrateur sache qui propose</span><input id="f-auteur" autocomplete="given-name"></label>
+      <div class="err" id="f-err" hidden></div>
+      <div class="actions"><button class="btn" type="submit" id="f-send">Envoyer la proposition</button></div>
+    </form>
+  </section>
+
+  <section id="view-admin" hidden>
+    <h2>Espace administrateur</h2>
+    <div id="gate" class="panel">
+      <p style="margin:0" id="gate-msg">Cet espace est réservé à l'administrateur de l'arbre. Connecte-toi avec ton compte Google.</p>
+      <div class="actions"><button class="btn" id="login">Se connecter avec Google</button><button class="btn ghost" id="logout-wrong" hidden>Se déconnecter</button></div>
+    </div>
+    <div id="admin-body" hidden>
+      <div class="adminbar">
+        <span class="meta" id="admin-who"></span>
+        <span class="actions"><button class="btn ghost sm" id="export">Exporter l'arbre</button><button class="btn ghost sm" id="logout">Se déconnecter</button></span>
+      </div>
+      <h3 class="sub">Propositions en attente</h3>
+      <p class="lead">Vérifie, corrige si besoin, puis valide. Rien n'apparaît dans l'arbre sans ton accord.</p>
+      <div class="queue" id="queue"></div>
+    </div>
+  </section>
+</main>
+</div>
+
+<div class="sheet-bg" id="sheet-bg" hidden><div class="sheet" id="sheet" role="dialog" aria-modal="true"></div></div>
+<div class="toast" id="toast" hidden></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import { getFirestore, collection, doc, onSnapshot, addDoc, getDocs, writeBatch, deleteDoc, serverTimestamp, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAiGh9dq54nHSy2tV9QSKPohezzQGuDFq0",
+  authDomain: "swima-family.firebaseapp.com",
+  projectId: "swima-family",
+  storageBucket: "swima-family.firebasestorage.app",
+  messagingSenderId: "744904321896",
+  appId: "1:744904321896:web:062927385c866c348804dd"
+};
+const ADMIN_EMAIL = "cpoundy@gmail.com";
+const CODE_KEY = "swima-family-code";
+
+const fb = initializeApp(firebaseConfig);
+const db = getFirestore(fb);
+const auth = getAuth(fb);
+getRedirectResult(auth).catch(() => {});
+
+/* ---------- État ---------- */
+const S = { persons: [], pending: [], code: null, user: null, isAdmin: false };
+let lastAdded = null, unsubPersons = null, unsubPending = null;
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const byId = id => S.persons.find(p => p.id === id);
+const spouses = p => (p.conjoints || []).map(byId).filter(Boolean);
+const initials = p => (((p.prenom || "?")[0] || "") + ((p.nom || "")[0] || "")).toUpperCase();
+const rank = i => i === 0 ? "1re épouse" : `${i + 1}e épouse`;
+const yearsTxt = p => !p.naissance && !p.deces ? "" : p.deces ? `${p.naissance || "?"} – ${p.deces}` : p.naissance;
+const safeImg = src => typeof src === "string" && src.startsWith("data:image/") ? src : null;
+const avatar = p => { const s = safeImg(p.photo); return `<span class="avatar">${s ? `<img src="${s}" alt="">` : esc(initials(p))}</span>`; };
+const PIN = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z" fill="currentColor"/><circle cx="12" cy="10" r="2.6" fill="var(--surface)"/></svg>';
+const byBirth = (a, b) => (a.naissance || "9999").localeCompare(b.naissance || "9999");
+const FIELDS = ["prenom", "nom", "habite", "naissance", "deces", "lieu", "anecdote"];
+const LABELS = { prenom: "Prénom", nom: "Nom", habite: "Lieu de vie", naissance: "Naissance", deces: "Décès", lieu: "Lieu de naissance", anecdote: "Anecdote" };
+const col = name => collection(db, "families", S.code, name);
+
+/* ---------- Code famille ---------- */
+function readCode() { try { return localStorage.getItem(CODE_KEY); } catch (e) { return null; } }
+function writeCode(c) { try { c ? localStorage.setItem(CODE_KEY, c) : localStorage.removeItem(CODE_KEY); } catch (e) {} }
+
+async function tryCode(code) {
+  code = (code || "").trim().toLowerCase();
+  if (!code) return false;
+  try { await getDocs(collection(db, "families", code, "persons")); return code; }
+  catch (e) { return false; }
+}
+$("code-form").onsubmit = async e => {
+  e.preventDefault();
+  $("code-err").hidden = true; $("code-btn").disabled = true; $("code-btn").textContent = "Vérification…";
+  const ok = await tryCode($("code-input").value);
+  $("code-btn").disabled = false; $("code-btn").textContent = "Entrer";
+  if (!ok) { $("code-err").textContent = "Ce code ne fonctionne pas. Vérifie-le dans le groupe WhatsApp de la famille."; $("code-err").hidden = false; return; }
+  writeCode(ok); enter(ok);
+};
+$("forget-code").onclick = () => { writeCode(null); unsubPersons && unsubPersons(); location.reload(); };
+
+function enter(code) {
+  S.code = code;
+  $("gate-code").hidden = true; $("app").hidden = false;
+  unsubPersons && unsubPersons();
+  unsubPersons = onSnapshot(col("persons"), snap => {
+    S.persons = snap.docs.map(d => ({ id: d.id, parents: [], conjoints: [], ...d.data() }));
+    $("tree-loading").hidden = true;
+    renderTree(); refreshSelects();
+  }, () => { writeCode(null); location.reload(); });
+  if (S.isAdmin) watchPending();
+}
+
+(async function boot() {
+  const saved = readCode();
+  if (saved && await tryCode(saved)) enter(saved);
+  else { writeCode(null); $("gate-code").hidden = false; }
+})();
+
+/* ---------- Onglets ---------- */
+function show(view) {
+  document.querySelectorAll(".tab").forEach(t => t.setAttribute("aria-selected", t.dataset.view === view));
+  ["arbre", "proposer", "admin"].forEach(v => $("view-" + v).hidden = v !== view);
+  window.scrollTo({ top: 0 });
+}
+document.querySelectorAll(".tab").forEach(t => t.onclick = () => show(t.dataset.view));
+$("empty-add").onclick = () => { prepForm("new"); show("proposer"); };
+
+/* ---------- Arbre ---------- */
+function kidsOf(p) { const ids = [p.id, ...(p.conjoints || [])]; return S.persons.filter(c => (c.parents || []).some(x => ids.includes(x))).sort(byBirth); }
+function kidsOfPair(a, b) { return S.persons.filter(c => (c.parents || []).includes(a.id) && c.parents.includes(b.id)).sort(byBirth); }
+function rootsList() {
+  const roots = S.persons.filter(p => !(p.parents || []).length && !spouses(p).some(s => (s.parents || []).length)).sort(byBirth);
+  return roots.filter(p => !roots.some(q => q !== p && (q.conjoints || []).includes(p.id) && ((q.conjoints || []).length > (p.conjoints || []).length || roots.indexOf(q) < roots.indexOf(p))));
+}
+let BR = {};
+function computeBranches() {
+  BR = {};
+  const roots = rootsList();
+  const firstKids = []; roots.forEach(r => kidsOf(r).forEach(k => { if (!firstKids.includes(k)) firstKids.push(k); }));
+  firstKids.forEach((k, i) => {
+    const b = (i % 5) + 1;
+    const mark = p => { if (BR[p.id]) return; BR[p.id] = b; spouses(p).forEach(s => { if (!(s.parents || []).length) BR[s.id] = b; }); kidsOf(p).forEach(mark); };
+    mark(k);
+  });
+  S.persons.forEach(p => { if (BR[p.id] == null) BR[p.id] = 0; });
+  roots.forEach(r => { BR[r.id] = 0; spouses(r).forEach(s => BR[s.id] = 0); });
+  return firstKids;
+}
+const cv = b => `--c:var(--b${b});--t:var(--t${b})`;
+function cardHTML(p) {
+  const b = BR[p.id] ?? 0;
+  return `<button class="card${p.id === lastAdded ? " new" : ""}" style="${cv(b)}" data-id="${p.id}">${avatar(p)}<span class="pn">${esc(p.prenom)}</span><span class="nn">${esc(p.nom)}</span>${p.habite && !p.deces ? `<span class="hb">${PIN}${esc(p.habite)}</span>` : ""}${yearsTxt(p) ? `<span class="yr${p.deces ? " dead" : ""}">${esc(yearsTxt(p))}</span>` : ""}</button>`;
+}
+function kidList(kids, seen, b) { const k = kids.filter(x => !seen.has(x.id)); return k.length ? `<ul style="--pc:var(--b${b})">${k.map(x => node(x, seen, BR[x.id] ?? b)).join("")}</ul>` : ""; }
+function node(p, seen, lineB) {
+  if (seen.has(p.id)) return ""; seen.add(p.id);
+  const sps = spouses(p); sps.forEach(s => seen.add(s.id));
+  const b = BR[p.id] ?? 0;
+  if (sps.length <= 1) {
+    const sp = sps[0];
+    return `<li style="--lc:var(--b${lineB})"><div class="couple">${cardHTML(p)}${sp ? `<span class="tie"></span>${cardHTML(sp)}` : ""}</div>${kidList(kidsOf(p), seen, b)}</li>`;
+  }
+  const foyers = sps.map((s, i) => `<li style="--lc:var(--b${b})"><div class="foyer"><span class="foyer-label">${rank(i)}</span>${cardHTML(s)}</div>${kidList(kidsOfPair(p, s), seen, b)}</li>`).join("");
+  const others = kidsOf(p).filter(k => !sps.some(s => k.parents.includes(s.id)) && !seen.has(k.id)).map(k => node(k, seen, BR[k.id] ?? b)).join("");
+  return `<li style="--lc:var(--b${lineB})"><div class="couple">${cardHTML(p)}</div><ul style="--pc:var(--b${b})">${foyers}${others}</ul></li>`;
+}
+function renderTree() {
+  const empty = !S.persons.length;
+  $("tree-empty").hidden = !empty; $("tree-wrap").hidden = empty;
+  const firstKids = computeBranches();
+  const seen = new Set();
+  let html = rootsList().map(r => node(r, seen, 0)).join("");
+  // Sécurité : toute fiche non rattachée (lien cassé) reste visible
+  const orphans = S.persons.filter(p => !seen.has(p.id));
+  html += orphans.map(p => node(p, seen, 0)).join("");
+  $("tree").innerHTML = `<ul>${html}</ul>`;
+  const d = {}, f = p => d[p.id] ??= ((p.parents || []).length ? 1 + Math.max(...p.parents.map(x => byId(x) ? f(byId(x)) : 0)) : (spouses(p).find(s => (s.parents || []).length) ? f(spouses(p).find(s => (s.parents || []).length)) : 1));
+  const gens = new Set(S.persons.map(f));
+  $("stats").innerHTML = empty ? "" : `<span><b>${S.persons.length}</b>personnes</span><span><b>${gens.size}</b>générations</span><span><b>${firstKids.length}</b>branches</span>`;
+  $("legend").innerHTML = firstKids.map(k => `<span class="chip" style="${cv(BR[k.id])}"><i></i>Branche ${esc(k.prenom)}</span>`).join("");
+  $("tree").querySelectorAll(".card").forEach(b => b.onclick = () => openSheet(b.dataset.id));
+}
+
+/* ---------- Fiche ---------- */
+function openSheet(id) {
+  const p = byId(id); if (!p) return;
+  const par = (p.parents || []).map(byId).filter(Boolean).map(x => x.prenom + " " + x.nom).join(" et ");
+  const sps = spouses(p);
+  const kids = kidsOf(p).map(k => k.prenom).join(", ");
+  $("sheet").setAttribute("style", cv(BR[p.id] ?? 0));
+  $("sheet").innerHTML = `
+    <div class="cover"></div>
+    <div class="top">${avatar(p)}<div><h3>${esc(p.prenom)}</h3><div class="nn">${esc(p.nom)}</div></div></div>
+    <dl>
+      ${p.habite ? `<dt>${p.deces ? "Vivait à" : "Vit à"}</dt><dd>${esc(p.habite)}</dd>` : ""}
+      ${yearsTxt(p) ? `<dt>${p.deces ? "Vie" : "Naissance"}</dt><dd>${esc(yearsTxt(p))}</dd>` : ""}
+      ${p.lieu ? `<dt>Né(e) à</dt><dd>${esc(p.lieu)}</dd>` : ""}
+      ${par ? `<dt>Parents</dt><dd>${esc(par)}</dd>` : ""}
+      ${sps.length ? `<dt>${sps.length > 1 ? "Épouses" : "Conjoint"}</dt><dd>${esc(sps.map(s => s.prenom + " " + s.nom).join(", "))}</dd>` : ""}
+      ${kids ? `<dt>Enfants</dt><dd>${esc(kids)}</dd>` : ""}
+    </dl>
+    ${p.anecdote ? `<div class="story">${esc(p.anecdote)}</div>` : ""}
+    <div class="actions"><button class="btn" id="s-child">Ajouter un enfant</button><button class="btn soft" id="s-fix">Proposer une correction</button><button class="btn ghost" id="s-close">Fermer</button></div>
+    ${S.isAdmin ? `<div class="actions admin-zone"><span class="meta">Admin</span><button class="btn danger sm" id="s-del">Supprimer cette fiche</button></div>` : ""}`;
+  $("sheet-bg").hidden = false;
+  $("s-close").onclick = closeSheet;
+  $("s-fix").onclick = () => { closeSheet(); prepForm("fix", id); show("proposer"); };
+  $("s-child").onclick = () => { closeSheet(); prepForm("new", null, id); show("proposer"); };
+  if (S.isAdmin) $("s-del").onclick = e => {
+    const b = e.currentTarget;
+    if (!b.dataset.armed) { b.dataset.armed = "1"; b.textContent = "Confirmer la suppression"; return; }
+    deletePerson(id);
+  };
+}
+function closeSheet() { $("sheet-bg").hidden = true; }
+$("sheet-bg").onclick = e => { if (e.target === $("sheet-bg")) closeSheet(); };
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeSheet(); });
+
+async function deletePerson(id) {
+  const batch = writeBatch(db);
+  batch.delete(doc(db, "families", S.code, "persons", id));
+  S.persons.forEach(q => {
+    const upd = {};
+    if ((q.conjoints || []).includes(id)) upd.conjoints = arrayRemove(id);
+    if ((q.parents || []).includes(id)) upd.parents = arrayRemove(id);
+    if (Object.keys(upd).length) batch.update(doc(db, "families", S.code, "persons", q.id), upd);
+  });
+  try { await batch.commit(); closeSheet(); toast("Fiche supprimée."); }
+  catch (e) { toast("La suppression a échoué. Vérifie ta connexion."); }
+}
+
+/* ---------- Formulaire ---------- */
+function personOptions(empty) {
+  return `<option value="">${empty}</option>` + S.persons.slice().sort((a, b) => (a.prenom || "").localeCompare(b.prenom || "")).map(p => `<option value="${p.id}">${esc((p.prenom || "") + " " + (p.nom || ""))}${p.naissance ? " (" + esc(p.naissance) + ")" : ""}</option>`).join("");
+}
+function refreshSelects() {
+  const keep = ["f-target", "f-parent", "f-parent2", "f-conjoint"].map(i => $(i).value);
+  $("f-target").innerHTML = personOptions("Choisir la personne");
+  $("f-parent").innerHTML = personOptions("Personne / inconnu");
+  $("f-parent2").innerHTML = personOptions("Personne / inconnu");
+  $("f-conjoint").innerHTML = personOptions("Personne");
+  ["f-target", "f-parent", "f-parent2", "f-conjoint"].forEach((i, n) => $(i).value = keep[n]);
+}
+function setKind(k) {
+  $("k-new").checked = k === "new"; $("k-fix").checked = k === "fix";
+  $("wrap-target").hidden = k !== "fix"; $("wrap-links").hidden = k === "fix";
+}
+function prepForm(kind, target, parent) {
+  refreshSelects(); setKind(kind); $("f-err").hidden = true;
+  FIELDS.forEach(f => $("f-" + f).value = ""); $("f-nom").value = "Swima"; $("f-photo").value = "";
+  ["f-target", "f-parent", "f-parent2", "f-conjoint"].forEach(i => $(i).value = "");
+  if (kind === "fix" && target) { const p = byId(target); $("f-target").value = target; FIELDS.forEach(f => $("f-" + f).value = p[f] || ""); }
+  if (parent) { const sps = spouses(byId(parent)); $("f-parent").value = parent; if (sps.length === 1) $("f-parent2").value = sps[0].id; }
+}
+document.querySelectorAll("input[name=kind]").forEach(r => r.onchange = () => prepForm(r.value));
+$("f-target").onchange = () => { const id = $("f-target").value; if (id) prepForm("fix", id); };
+function readPhoto() {
+  const f = $("f-photo").files[0]; if (!f) return Promise.resolve(null);
+  return new Promise(res => {
+    const img = new Image(), r = new FileReader();
+    r.onload = () => { img.onload = () => { const c = document.createElement("canvas"), s = Math.min(1, 240 / Math.max(img.width, img.height)); c.width = Math.round(img.width * s); c.height = Math.round(img.height * s); c.getContext("2d").drawImage(img, 0, 0, c.width, c.height); res(c.toDataURL("image/jpeg", .8)); }; img.onerror = () => res(null); img.src = r.result; };
+    r.readAsDataURL(f);
+  });
+}
+$("form").onsubmit = async e => {
+  e.preventDefault();
+  const kind = $("k-fix").checked ? "fix" : "new";
+  const err = m => { $("f-err").textContent = m; $("f-err").hidden = false; };
+  if (kind === "fix" && !$("f-target").value) return err("Choisis la fiche à corriger.");
+  if (!$("f-prenom").value.trim()) return err("Le prénom est obligatoire.");
+  if (!$("f-auteur").value.trim()) return err("Indique ton prénom pour que l'administrateur sache qui propose.");
+  const data = {}; FIELDS.forEach(f => data[f] = $("f-" + f).value.trim().slice(0, f === "anecdote" ? 2000 : 120));
+  data.photo = await readPhoto();
+  if (kind === "new") { data.parent = $("f-parent").value; data.parent2 = $("f-parent2").value; data.conjoint = $("f-conjoint").value; }
+  $("f-send").disabled = true; $("f-send").textContent = "Envoi…";
+  try {
+    await addDoc(col("pending"), { kind, target: kind === "fix" ? $("f-target").value : "", auteur: $("f-auteur").value.trim().slice(0, 60), date: new Date().toLocaleDateString("fr-FR"), data, createdAt: serverTimestamp() });
+    prepForm("new"); toast("Proposition envoyée. Elle apparaîtra après validation."); show("arbre");
+  } catch (e2) { err("L'envoi a échoué. Vérifie ta connexion internet et réessaie."); }
+  $("f-send").disabled = false; $("f-send").textContent = "Envoyer la proposition";
+};
+
+/* ---------- Admin ---------- */
+$("login").onclick = async () => {
+  const provider = new GoogleAuthProvider();
+  try { await signInWithPopup(auth, provider); }
+  catch (e) { if (e && (e.code === "auth/popup-blocked" || e.code === "auth/operation-not-supported-in-this-environment")) signInWithRedirect(auth, provider); else toast("Connexion annulée ou impossible."); }
+};
+$("logout").onclick = $("logout-wrong").onclick = () => signOut(auth);
+onAuthStateChanged(auth, user => {
+  S.user = user;
+  S.isAdmin = !!user && user.email === ADMIN_EMAIL && user.emailVerified;
+  $("gate").hidden = S.isAdmin; $("admin-body").hidden = !S.isAdmin;
+  $("login").hidden = !!user; $("logout-wrong").hidden = !user || S.isAdmin;
+  $("gate-msg").textContent = user && !S.isAdmin
+    ? `Le compte ${user.email} n'est pas administrateur de l'arbre.`
+    : "Cet espace est réservé à l'administrateur de l'arbre. Connecte-toi avec ton compte Google.";
+  if (S.isAdmin) { $("admin-who").textContent = "Connecté : " + user.email; if (S.code) watchPending(); }
+  else { unsubPending && unsubPending(); unsubPending = null; S.pending = []; updateBadge(); }
+});
+function watchPending() {
+  unsubPending && unsubPending();
+  unsubPending = onSnapshot(col("pending"), snap => {
+    S.pending = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => (a.createdAt?.seconds || 0) - (b.createdAt?.seconds || 0));
+    updateBadge(); renderAdmin();
+  });
+}
+function updateBadge() { const n = S.pending.length; $("badge").textContent = n; $("badge").hidden = !n; }
+function renderAdmin() {
+  if (!S.isAdmin) return;
+  if (!S.pending.length) { $("queue").innerHTML = '<div class="empty">Aucune proposition en attente. Tout est à jour.</div>'; return; }
+  const opts = personOptions("Personne / inconnu");
+  $("queue").innerHTML = S.pending.map(q => {
+    const d = q.data || {}; const t = q.kind === "fix" ? byId(q.target) : null;
+    let diff = "";
+    if (q.kind === "fix") {
+      if (!t) diff = `<div class="diff">La fiche visée n'existe plus. Tu peux refuser cette proposition.</div>`;
+      else { const ch = FIELDS.filter(f => (t[f] || "") !== (d[f] || "")); diff = `<div class="diff">${ch.length ? ch.map(f => `<div><b>${LABELS[f]} :</b> <s>${esc(t[f] || "vide")}</s> → ${esc(d[f] || "vide")}</div>`).join("") : "<div>Aucun changement détecté.</div>"}${d.photo ? "<div><b>Photo :</b> nouvelle photo jointe</div>" : ""}</div>`; }
+    }
+    return `<article class="prop" data-q="${q.id}">
+      <div class="prop-head"><span class="pill">${q.kind === "fix" ? "Correction" : "Nouvelle personne"}</span><span class="meta">Proposé par ${esc(q.auteur)} le ${esc(q.date)}</span></div>
+      ${q.kind === "fix" ? `<div><b>Fiche :</b> ${t ? esc(t.prenom + " " + t.nom) : "introuvable"}</div>${diff}` : ""}
+      <div class="row"><label>Prénom<input data-f="prenom" value="${esc(d.prenom)}"></label><label>Nom<input data-f="nom" value="${esc(d.nom)}"></label></div>
+      <label>Lieu de vie<input data-f="habite" value="${esc(d.habite)}"></label>
+      <div class="row"><label>Naissance<input data-f="naissance" value="${esc(d.naissance)}"></label><label>Décès<input data-f="deces" value="${esc(d.deces)}"></label></div>
+      <label>Lieu de naissance<input data-f="lieu" value="${esc(d.lieu)}"></label>
+      ${q.kind === "new" ? `<div class="row"><label>Enfant de<select data-f="parent">${opts}</select></label><label>et de<select data-f="parent2">${opts}</select></label></div><label>Marié(e) à<select data-f="conjoint">${opts}</select></label>` : ""}
+      <label>Anecdote<textarea data-f="anecdote">${esc(d.anecdote)}</textarea></label>
+      ${safeImg(d.photo) ? `<div class="actions">${avatar({ photo: d.photo })}<span class="meta">Photo jointe</span></div>` : ""}
+      <div class="actions"><button class="btn sm" data-act="ok" ${q.kind === "fix" && !t ? "disabled" : ""}>Valider</button><button class="btn danger sm" data-act="no">Refuser</button></div>
+    </article>`;
+  }).join("");
+  $("queue").querySelectorAll(".prop").forEach(el => {
+    const q = S.pending.find(x => x.id === el.dataset.q);
+    el.querySelectorAll("select[data-f]").forEach(s => s.value = (q.data || {})[s.dataset.f] || "");
+    el.querySelector("[data-act=ok]").onclick = () => approve(q, el);
+    el.querySelector("[data-act=no]").onclick = async () => {
+      try { await deleteDoc(doc(db, "families", S.code, "pending", q.id)); toast("Proposition refusée."); }
+      catch (e) { toast("Action impossible. Vérifie ta connexion."); }
+    };
+  });
+}
+async function approve(q, el) {
+  const v = {}; el.querySelectorAll("[data-f]").forEach(i => v[i.dataset.f] = i.value.trim());
+  if (!v.prenom) { toast("Le prénom est obligatoire."); return; }
+  const P = id => doc(db, "families", S.code, "persons", id);
+  const batch = writeBatch(db);
+  const fields = {}; FIELDS.forEach(f => fields[f] = v[f] || "");
+  const photo = safeImg((q.data || {}).photo);
+  if (q.kind === "fix") {
+    if (!byId(q.target)) { toast("La fiche n'existe plus."); return; }
+    if (photo) fields.photo = photo;
+    batch.update(P(q.target), fields); lastAdded = q.target;
+  } else {
+    const ref = doc(col("persons"));
+    const parents = [v.parent, v.parent2].filter((x, i, a) => x && a.indexOf(x) === i && byId(x));
+    const conj = v.conjoint && byId(v.conjoint) ? v.conjoint : null;
+    batch.set(ref, { ...fields, photo: photo || null, parents, conjoints: conj ? [conj] : [], createdAt: serverTimestamp() });
+    if (conj) batch.update(P(conj), { conjoints: arrayUnion(ref.id) });
+    if (parents.length === 2) { batch.update(P(parents[0]), { conjoints: arrayUnion(parents[1]) }); batch.update(P(parents[1]), { conjoints: arrayUnion(parents[0]) }); }
+    lastAdded = ref.id;
+  }
+  batch.delete(doc(db, "families", S.code, "pending", q.id));
+  try { await batch.commit(); toast(q.kind === "fix" ? "Correction validée et publiée." : "Personne ajoutée à l'arbre."); }
+  catch (e) { toast("La validation a échoué. Vérifie ta connexion."); }
+}
+$("export").onclick = () => {
+  const data = JSON.stringify({ exporte: new Date().toISOString(), personnes: S.persons }, null, 2);
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([data], { type: "application/json" }));
+  a.download = `swima-family-${new Date().toISOString().slice(0, 10)}.json`;
+  document.body.appendChild(a); a.click(); a.remove();
+  toast("Export téléchargé.");
+};
+
+/* ---------- Divers ---------- */
+let tt; function toast(m) { $("toast").textContent = m; $("toast").hidden = false; clearTimeout(tt); tt = setTimeout(() => $("toast").hidden = true, 2800); }
+function drawLeaves() {
+  const c = $("leaves"), r = c.getBoundingClientRect(); if (!r.width) return;
+  const dpr = window.devicePixelRatio || 1; c.width = r.width * dpr; c.height = r.height * dpr;
+  const g = c.getContext("2d"); g.scale(dpr, dpr);
+  const cols = ["#C98A1E", "#B4552E", "#2F7F78", "#8E4F86", "#5E7F2E"];
+  let seed = 7; const rnd = () => (seed = (seed * 9301 + 49297) % 233280) / 233280;
+  const n = Math.round(r.width / 14);
+  for (let i = 0; i < n; i++) {
+    const x = r.width * (.35 + rnd() * .7), y = rnd() * r.height, s = 6 + rnd() * 12, a = rnd() * Math.PI * 2;
+    g.save(); g.translate(x, y); g.rotate(a); g.globalAlpha = .35 + rnd() * .5; g.fillStyle = cols[i % cols.length];
+    g.beginPath(); g.moveTo(0, -s); g.quadraticCurveTo(s * .7, 0, 0, s); g.quadraticCurveTo(-s * .7, 0, 0, -s); g.fill(); g.restore();
+  }
+}
+drawLeaves();
+let rz; window.addEventListener("resize", () => { clearTimeout(rz); rz = setTimeout(drawLeaves, 150); });
+</script>
+</body>
+</html>
