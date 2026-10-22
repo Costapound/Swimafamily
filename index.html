@@ -19,12 +19,18 @@ img{max-width:100%}
 /* Layout : un album de famille chaleureux. Bandeau d'accueil, onglets collants, arbre posé sur un fond doux, une couleur par branche. */
 
 /* Layout : un album de famille chaleureux. Bandeau d'accueil, onglets collants, arbre posé sur un fond doux, une couleur par branche. */
+
+/* Layout : un album de famille chaleureux. Bandeau d'accueil, onglets collants, arbre posé sur un fond doux, une couleur par branche. */
+
+/* Layout : un album de famille chaleureux. Bandeau d'accueil, onglets collants, arbre posé sur un fond doux, une couleur par branche. */
 :root{
   --bg:#F7EFE6; --surface:#FFFCF8; --sunk:#F1E5D8; --fg:#2E241D; --muted:#7A6A5D; --line:#D9C6B3;
   --accent:#B4552E; --accent-soft:#F6DDCF; --accent-fg:#FFFFFF;
   --hero:#3B2A20; --hero-fg:#FBEFE3; --hero-muted:#D7BFA9;
   --b0:#B4552E; --b1:#C98A1E; --b2:#2F7F78; --b3:#8E4F86; --b4:#5E7F2E; --b5:#C2466A;
   --t0:#F6DDCF; --t1:#F7E8C6; --t2:#D6EBE8; --t3:#EEDDEA; --t4:#E1EBCF; --t5:#F6D9E1;
+  --b6:#3F6FB0; --b7:#9A5B2A; --b8:#5E7684; --b9:#6B5BB5;
+  --t6:#DCE6F4; --t7:#F0E1D3; --t8:#E0E7EB; --t9:#E6E2F5;
   --pending:#C98A1E; --pending-soft:#F7E8C6; --danger:#A8382F;
   --display:"Young Serif", Georgia, "Times New Roman", serif;
   --body:"Nunito Sans", "Segoe UI", system-ui, sans-serif;
@@ -36,6 +42,8 @@ img{max-width:100%}
   --hero:#2E211A; --hero-fg:#FBEFE3; --hero-muted:#C9AE96;
   --b0:#E8885D; --b1:#E6B252; --b2:#5FBDB3; --b3:#C88BC0; --b4:#9CC062; --b5:#EB7D9C;
   --t0:#4A2D20; --t1:#47381A; --t2:#1E3E3B; --t3:#3E2A3C; --t4:#2F3C1E; --t5:#4A2430;
+  --b6:#7FA6E0; --b7:#D19A66; --b8:#9DB3C0; --b9:#A99BEB;
+  --t6:#1E2C45; --t7:#3E2C1C; --t8:#263038; --t9:#2C2645;
   --pending:#E6B252; --pending-soft:#47381A; --danger:#EF8577; color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#1D1612; --surface:#2A211B; --sunk:#241C17; --fg:#F4E9DE; --muted:#BBA796; --line:#4A3B30;
@@ -43,6 +51,8 @@ img{max-width:100%}
   --hero:#2E211A; --hero-fg:#FBEFE3; --hero-muted:#C9AE96;
   --b0:#E8885D; --b1:#E6B252; --b2:#5FBDB3; --b3:#C88BC0; --b4:#9CC062; --b5:#EB7D9C;
   --t0:#4A2D20; --t1:#47381A; --t2:#1E3E3B; --t3:#3E2A3C; --t4:#2F3C1E; --t5:#4A2430;
+  --b6:#7FA6E0; --b7:#D19A66; --b8:#9DB3C0; --b9:#A99BEB;
+  --t6:#1E2C45; --t7:#3E2C1C; --t8:#263038; --t9:#2C2645;
   --pending:#E6B252; --pending-soft:#47381A; --danger:#EF8577; color-scheme:dark}
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.55}
@@ -82,7 +92,7 @@ section h2{font-family:var(--display);font-weight:400;font-size:1.55rem;margin:1
 .stats b{color:var(--fg);font-family:var(--display);font-weight:400;font-size:1.25rem;margin-right:4px;font-variant-numeric:tabular-nums}
 
 /* Arbre */
-.tree-wrap{overflow-x:auto;padding:24px 0 28px;-webkit-overflow-scrolling:touch;background:var(--sunk);background-image:radial-gradient(var(--line) 1px,transparent 1.2px);background-size:22px 22px;border-radius:22px}
+.tree-wrap{overflow:auto;max-height:72vh;touch-action:pan-x pan-y;overscroll-behavior:contain;padding:24px 0 28px;-webkit-overflow-scrolling:touch;background:var(--sunk);background-image:radial-gradient(var(--line) 1px,transparent 1.2px);background-size:22px 22px;border-radius:22px}
 .tree{width:max-content;margin:0 auto;padding:0 14px}
 .tree ul{display:flex;justify-content:center;padding:26px 0 0;margin:0;position:relative}
 .tree>ul{padding-top:0}
@@ -168,6 +178,24 @@ dt{color:var(--muted)}dd{margin:0;font-weight:600}
 @media (prefers-reduced-motion:no-preference){.sheet{animation:up .24s ease-out}@keyframes up{from{transform:translateY(28px);opacity:.6}}}
 @media (prefers-reduced-motion:reduce){.card{transition:none}}
 
+
+/* Zoom et vue d'ensemble */
+.tree{transform-origin:0 0}
+.tree-wrap.grab{cursor:grab}.tree-wrap.dragging{cursor:grabbing;user-select:none}
+.zoombar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:10px 0}
+.zgroup{display:inline-flex;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:999px;overflow:hidden}
+.zbtn{appearance:none;border:0;background:transparent;color:var(--fg);font:700 1.2rem var(--body);width:42px;height:38px;cursor:pointer;line-height:1}
+.zbtn:hover{background:var(--sunk)}
+#z-val{min-width:58px;text-align:center;font-weight:700;font-size:.88rem;font-variant-numeric:tabular-nums;color:var(--muted)}
+.zhint{font-size:.82rem;color:var(--muted)}
+#tree-stage.expanded{position:fixed;inset:0;z-index:15;background:var(--bg);display:flex;flex-direction:column;padding:calc(10px + env(safe-area-inset-top,0px)) max(12px,env(safe-area-inset-right,0px)) calc(10px + env(safe-area-inset-bottom,0px)) max(12px,env(safe-area-inset-left,0px))}
+#tree-stage.expanded .tree-wrap{flex:1;max-height:none;min-height:0}
+#tree-stage.expanded .zoombar{margin-top:0}
+
+button.chip{appearance:none;font-family:var(--body);color:var(--fg);cursor:pointer;transition:border-color .15s,background .15s}
+button.chip:hover{border-color:var(--c);background:var(--t)}
+.card.pulse{box-shadow:0 0 0 4px var(--c),0 10px 28px -8px rgba(60,35,20,.5);transform:translateY(-3px)}
+@media (prefers-reduced-motion:no-preference){.card.pulse{animation:pulse 1.2s ease-in-out 2}@keyframes pulse{50%{box-shadow:0 0 0 9px var(--t),0 10px 28px -8px rgba(60,35,20,.5)}}}
 .gate{max-width:480px;margin-block:28px}
 .gate h2{margin-top:0}
 .foot{margin-top:18px;text-align:center}
@@ -215,7 +243,15 @@ dt{color:var(--muted)}dd{margin:0;font-weight:600}
     <p class="lead">Chaque branche a sa couleur. Touchez une personne pour voir sa fiche, ajouter un enfant ou proposer une correction.</p>
     <div class="stats" id="stats"></div>
     <div class="legend" id="legend"></div>
-    <div class="tree-wrap" id="tree-wrap"><div class="tree" id="tree"></div></div>
+    <div id="tree-stage">
+      <div class="zoombar" id="zoombar">
+        <span class="zgroup"><button class="zbtn" id="z-out" aria-label="Dézoomer">−</button><span id="z-val">100 %</span><button class="zbtn" id="z-in" aria-label="Zoomer">+</button></span>
+        <button class="btn soft sm" id="z-fit">Vue d'ensemble</button>
+        <button class="btn ghost sm" id="z-full">Agrandir</button>
+        <span class="zhint" id="z-hint">Pincez avec deux doigts pour zoomer, glissez pour vous déplacer.</span>
+      </div>
+      <div class="tree-wrap" id="tree-wrap"><div class="tree" id="tree"></div></div>
+    </div>
     <div class="empty" id="tree-empty" hidden>
       <p style="margin:0 0 12px">L'arbre est encore vide. Il commence par le grand-père : c'est la première fiche à proposer.</p>
       <button class="btn" id="empty-add">Ajouter le grand-père</button>
@@ -366,6 +402,7 @@ function show(view) {
   document.querySelectorAll(".tab").forEach(t => t.setAttribute("aria-selected", t.dataset.view === view));
   ["arbre", "proposer", "admin"].forEach(v => $("view-" + v).hidden = v !== view);
   window.scrollTo({ top: 0 });
+  if (view === "arbre" && !userZoomed) requestAnimationFrame(fitTree);
 }
 document.querySelectorAll(".tab").forEach(t => t.onclick = () => show(t.dataset.view));
 $("empty-add").onclick = () => { prepForm("new"); show("proposer"); };
@@ -383,7 +420,7 @@ function computeBranches() {
   const roots = rootsList();
   const firstKids = []; roots.forEach(r => kidsOf(r).forEach(k => { if (!firstKids.includes(k)) firstKids.push(k); }));
   firstKids.forEach((k, i) => {
-    const b = (i % 5) + 1;
+    const b = (i % 9) + 1;
     const mark = p => { if (BR[p.id]) return; BR[p.id] = b; spouses(p).forEach(s => { if (!(s.parents || []).length) BR[s.id] = b; }); kidsOf(p).forEach(mark); };
     mark(k);
   });
@@ -411,7 +448,7 @@ function node(p, seen, lineB) {
 }
 function renderTree() {
   const empty = !S.persons.length;
-  $("tree-empty").hidden = !empty; $("tree-wrap").hidden = empty;
+  $("tree-empty").hidden = !empty; $("tree-stage").hidden = empty;
   const firstKids = computeBranches();
   const seen = new Set();
   let html = rootsList().map(r => node(r, seen, 0)).join("");
@@ -422,9 +459,92 @@ function renderTree() {
   const d = {}, f = p => d[p.id] ??= ((p.parents || []).length ? 1 + Math.max(...p.parents.map(x => byId(x) ? f(byId(x)) : 0)) : (spouses(p).find(s => (s.parents || []).length) ? f(spouses(p).find(s => (s.parents || []).length)) : 1));
   const gens = new Set(S.persons.map(f));
   $("stats").innerHTML = empty ? "" : `<span><b>${S.persons.length}</b>personnes</span><span><b>${gens.size}</b>générations</span><span><b>${firstKids.length}</b>branches</span>`;
-  $("legend").innerHTML = firstKids.map(k => `<span class="chip" style="${cv(BR[k.id])}"><i></i>Branche ${esc(k.prenom)}</span>`).join("");
-  $("tree").querySelectorAll(".card").forEach(b => b.onclick = () => openSheet(b.dataset.id));
+  $("legend").innerHTML = firstKids.map(k => `<button class="chip" style="${cv(BR[k.id])}" data-id="${k.id}" title="Aller à ${esc(k.prenom)}"><i></i>Branche ${esc(k.prenom)}</button>`).join("");
+  $("legend").querySelectorAll(".chip").forEach(c => c.onclick = () => focusPerson(c.dataset.id));
+  $("tree").querySelectorAll(".card").forEach(b => b.onclick = () => { if (!dragMoved) openSheet(b.dataset.id); });
+  if (!empty) requestAnimationFrame(() => userZoomed ? setZoom(Z, false) : fitTree());
 }
+
+/* ---------- Zoom de l'arbre ---------- */
+let Z = 1, userZoomed = false, dragMoved = false;
+const wrapEl = () => $("tree-wrap");
+function setZoom(z, keepCenter = true) {
+  z = Math.min(1.5, Math.max(0.1, z));
+  const w = wrapEl(), t = $("tree");
+  const cx = (w.scrollLeft + w.clientWidth / 2) / Z, cy = (w.scrollTop + w.clientHeight / 2) / Z;
+  Z = z;
+  t.style.zoom = Z;
+  $("z-val").textContent = Math.round(Z * 100) + " %";
+  if (keepCenter) { w.scrollLeft = cx * Z - w.clientWidth / 2; w.scrollTop = cy * Z - w.clientHeight / 2; }
+}
+function fitTree() {
+  const w = wrapEl(), t = $("tree");
+  if (!w || w.offsetParent === null) return;
+  t.style.zoom = 1;
+  const nw = t.scrollWidth, nh = t.scrollHeight;
+  const expanded = $("tree-stage").classList.contains("expanded");
+  let z = (w.clientWidth - 8) / nw;
+  if (expanded) z = Math.min(z, (w.clientHeight - 8) / nh);
+  setZoom(Math.min(1, z), false);
+  w.scrollLeft = 0; w.scrollTop = 0;
+  userZoomed = false;
+}
+$("z-in").onclick = () => { userZoomed = true; setZoom(Z * 1.25); };
+$("z-out").onclick = () => { userZoomed = true; setZoom(Z / 1.25); };
+$("z-fit").onclick = fitTree;
+function focusPerson(id) {
+  const w = wrapEl(), card = $("tree").querySelector(`.card[data-id="${id}"]`);
+  if (!card) return;
+  userZoomed = true;
+  if (Z < 0.75) setZoom(0.85, false);
+  requestAnimationFrame(() => {
+    const wr = w.getBoundingClientRect(), cr = card.getBoundingClientRect();
+    w.scrollTo({ left: w.scrollLeft + (cr.left + cr.width / 2) - (wr.left + w.clientWidth / 2), top: w.scrollTop + (cr.top - wr.top) - 24, behavior: "smooth" });
+    if (!$("tree-stage").classList.contains("expanded")) {
+      const head = document.querySelector("header").offsetHeight;
+      window.scrollTo({ top: window.scrollY + wr.top - head - 12, behavior: "smooth" });
+    }
+    card.classList.remove("pulse"); void card.offsetWidth; card.classList.add("pulse");
+    setTimeout(() => card.classList.remove("pulse"), 2600);
+  });
+}
+$("z-full").onclick = () => {
+  const st = $("tree-stage"), on = !st.classList.contains("expanded");
+  st.classList.toggle("expanded", on);
+  $("z-full").textContent = on ? "Fermer" : "Agrandir";
+  document.body.style.overflow = on ? "hidden" : "";
+  requestAnimationFrame(fitTree);
+};
+document.addEventListener("keydown", e => { if (e.key === "Escape" && $("tree-stage").classList.contains("expanded")) $("z-full").click(); });
+(function gestures() {
+  const w = wrapEl();
+  let d0 = 0, z0 = 1;
+  const dist = t => Math.hypot(t[0].clientX - t[1].clientX, t[0].clientY - t[1].clientY);
+  w.addEventListener("touchstart", e => { if (e.touches.length === 2) { d0 = dist(e.touches); z0 = Z; } }, { passive: true });
+  w.addEventListener("touchmove", e => {
+    if (e.touches.length === 2 && d0) { e.preventDefault(); userZoomed = true; setZoom(z0 * dist(e.touches) / d0); }
+  }, { passive: false });
+  w.addEventListener("touchend", e => { if (e.touches.length < 2) d0 = 0; });
+  w.addEventListener("wheel", e => {
+    if (!e.ctrlKey) return;
+    e.preventDefault(); userZoomed = true; setZoom(Z * Math.exp(-e.deltaY * 0.01));
+  }, { passive: false });
+  // Glisser à la souris pour se déplacer
+  let drag = null;
+  w.classList.add("grab");
+  w.addEventListener("pointerdown", e => {
+    if (e.pointerType !== "mouse" || e.button !== 0) return;
+    drag = { x: e.clientX, y: e.clientY, l: w.scrollLeft, t: w.scrollTop }; dragMoved = false;
+  });
+  window.addEventListener("pointermove", e => {
+    if (!drag) return;
+    const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+    if (!dragMoved && Math.hypot(dx, dy) > 5) { dragMoved = true; w.classList.add("dragging"); }
+    if (dragMoved) { w.scrollLeft = drag.l - dx; w.scrollTop = drag.t - dy; }
+  });
+  window.addEventListener("pointerup", () => { drag = null; w.classList.remove("dragging"); setTimeout(() => dragMoved = false, 0); });
+})();
+let rzt; window.addEventListener("resize", () => { clearTimeout(rzt); rzt = setTimeout(() => { if (!userZoomed) fitTree(); }, 150); });
 
 /* ---------- Fiche ---------- */
 function openSheet(id) {
