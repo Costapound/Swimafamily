@@ -17,6 +17,8 @@ img{max-width:100%}
 [hidden]{display:none!important}
 
 /* Layout : un album de famille chaleureux. Bandeau d'accueil, onglets collants, arbre posé sur un fond doux, une couleur par branche. */
+
+/* Layout : un album de famille chaleureux. Bandeau d'accueil, onglets collants, arbre posé sur un fond doux, une couleur par branche. */
 :root{
   --bg:#F7EFE6; --surface:#FFFCF8; --sunk:#F1E5D8; --fg:#2E241D; --muted:#7A6A5D; --line:#D9C6B3;
   --accent:#B4552E; --accent-soft:#F6DDCF; --accent-fg:#FFFFFF;
@@ -111,7 +113,10 @@ section h2{font-family:var(--display);font-weight:400;font-size:1.55rem;margin:1
 .card .hb{display:inline-flex;align-items:center;gap:3px;font-size:.8rem;font-weight:700;color:var(--fg);padding:0 8px;line-height:1.2}
 .card .hb svg{width:12px;height:12px;flex:none;color:var(--c)}
 .card .yr{font-size:.78rem;font-weight:700;color:var(--c);background:var(--t);border-radius:999px;padding:1px 9px;font-variant-numeric:tabular-nums;margin-top:2px}
-.card .yr.dead::before{content:"✝ ";font-weight:400}
+.card .yr{display:inline-flex;align-items:center;gap:4px}
+.cres{width:12px;height:12px;flex:none;color:var(--c,var(--accent))}
+.rip{font-size:.85rem;font-style:italic;color:var(--muted);display:flex;align-items:center;gap:6px;margin-top:2px}
+.rip .cres{width:14px;height:14px;color:var(--c)}
 
 /* Formulaire */
 form,.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px;max-width:640px;display:grid;gap:15px}
@@ -312,6 +317,7 @@ const yearsTxt = p => !p.naissance && !p.deces ? "" : p.deces ? `${p.naissance |
 const safeImg = src => typeof src === "string" && src.startsWith("data:image/") ? src : null;
 const avatar = p => { const s = safeImg(p.photo); return `<span class="avatar">${s ? `<img src="${s}" alt="">` : esc(initials(p))}</span>`; };
 const PIN = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z" fill="currentColor"/><circle cx="12" cy="10" r="2.6" fill="var(--surface)"/></svg>';
+const CRES = '<svg class="cres" viewBox="0 0 24 24" aria-label="Décédé(e)" role="img"><path d="M15.5 3.2A9 9 0 1 0 15.5 20.8 7.2 7.2 0 1 1 15.5 3.2z" fill="currentColor"/><path d="M18.6 8.4l.75 1.55 1.7.25-1.23 1.2.29 1.69-1.51-.8-1.51.8.29-1.69-1.23-1.2 1.7-.25z" fill="currentColor"/></svg>';
 const byBirth = (a, b) => (a.naissance || "9999").localeCompare(b.naissance || "9999");
 const FIELDS = ["prenom", "nom", "habite", "naissance", "deces", "lieu", "anecdote"];
 const LABELS = { prenom: "Prénom", nom: "Nom", habite: "Lieu de vie", naissance: "Naissance", deces: "Décès", lieu: "Lieu de naissance", anecdote: "Anecdote" };
@@ -388,7 +394,7 @@ function computeBranches() {
 const cv = b => `--c:var(--b${b});--t:var(--t${b})`;
 function cardHTML(p) {
   const b = BR[p.id] ?? 0;
-  return `<button class="card${p.id === lastAdded ? " new" : ""}" style="${cv(b)}" data-id="${p.id}">${avatar(p)}<span class="pn">${esc(p.prenom)}</span><span class="nn">${esc(p.nom)}</span>${p.habite && !p.deces ? `<span class="hb">${PIN}${esc(p.habite)}</span>` : ""}${yearsTxt(p) ? `<span class="yr${p.deces ? " dead" : ""}">${esc(yearsTxt(p))}</span>` : ""}</button>`;
+  return `<button class="card${p.id === lastAdded ? " new" : ""}" style="${cv(b)}" data-id="${p.id}">${avatar(p)}<span class="pn">${esc(p.prenom)}</span><span class="nn">${esc(p.nom)}</span>${p.habite && !p.deces ? `<span class="hb">${PIN}${esc(p.habite)}</span>` : ""}${yearsTxt(p) ? `<span class="yr${p.deces ? " dead" : ""}">${p.deces ? CRES : ""}${esc(yearsTxt(p))}</span>` : ""}</button>`;
 }
 function kidList(kids, seen, b) { const k = kids.filter(x => !seen.has(x.id)); return k.length ? `<ul style="--pc:var(--b${b})">${k.map(x => node(x, seen, BR[x.id] ?? b)).join("")}</ul>` : ""; }
 function node(p, seen, lineB) {
@@ -429,7 +435,7 @@ function openSheet(id) {
   $("sheet").setAttribute("style", cv(BR[p.id] ?? 0));
   $("sheet").innerHTML = `
     <div class="cover"></div>
-    <div class="top">${avatar(p)}<div><h3>${esc(p.prenom)}</h3><div class="nn">${esc(p.nom)}</div></div></div>
+    <div class="top">${avatar(p)}<div><h3>${esc(p.prenom)}</h3><div class="nn">${esc(p.nom)}</div>${p.deces ? `<div class="rip">${CRES}Qu'Allah lui fasse miséricorde</div>` : ""}</div></div>
     <dl>
       ${p.habite ? `<dt>${p.deces ? "Vivait à" : "Vit à"}</dt><dd>${esc(p.habite)}</dd>` : ""}
       ${yearsTxt(p) ? `<dt>${p.deces ? "Vie" : "Naissance"}</dt><dd>${esc(yearsTxt(p))}</dd>` : ""}
