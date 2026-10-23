@@ -23,6 +23,12 @@ img{max-width:100%}
 /* Layout : un album de famille chaleureux. Bandeau d'accueil, onglets collants, arbre posé sur un fond doux, une couleur par branche. */
 
 /* Layout : un album de famille chaleureux. Bandeau d'accueil, onglets collants, arbre posé sur un fond doux, une couleur par branche. */
+
+/* Layout : un album de famille chaleureux. Bandeau d'accueil, onglets collants, arbre posé sur un fond doux, une couleur par branche. */
+
+/* Layout : un album de famille chaleureux. Bandeau d'accueil, onglets collants, arbre posé sur un fond doux, une couleur par branche. */
+
+/* Layout : un album de famille chaleureux. Bandeau d'accueil, onglets collants, arbre posé sur un fond doux, une couleur par branche. */
 :root{
   --bg:#F7EFE6; --surface:#FFFCF8; --sunk:#F1E5D8; --fg:#2E241D; --muted:#7A6A5D; --line:#D9C6B3;
   --accent:#B4552E; --accent-soft:#F6DDCF; --accent-fg:#FFFFFF;
@@ -196,6 +202,28 @@ button.chip{appearance:none;font-family:var(--body);color:var(--fg);cursor:point
 button.chip:hover{border-color:var(--c);background:var(--t)}
 .card.pulse{box-shadow:0 0 0 4px var(--c),0 10px 28px -8px rgba(60,35,20,.5);transform:translateY(-3px)}
 @media (prefers-reduced-motion:no-preference){.card.pulse{animation:pulse 1.2s ease-in-out 2}@keyframes pulse{50%{box-shadow:0 0 0 9px var(--t),0 10px 28px -8px rgba(60,35,20,.5)}}}
+
+/* Liens familiaux */
+.links-box{border:1px solid var(--line);border-radius:12px;padding:12px 14px 14px;margin:0;display:grid;gap:12px;min-width:0}
+.links-box legend{font-weight:800;font-size:.88rem;padding:0 6px;color:var(--accent)}
+.hint-line{font-size:.86rem;color:var(--muted);background:var(--sunk);border-radius:10px;padding:8px 12px}
+.hint-line b{color:var(--fg)}
+.links-edit{display:grid;gap:10px}
+.spchips{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.spchip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:3px 4px 3px 12px;font-weight:700;font-size:.86rem;background:var(--surface)}
+.spchip button{appearance:none;border:0;background:var(--sunk);color:var(--fg);width:26px;height:26px;border-radius:50%;cursor:pointer;font-size:1rem;line-height:1}
+.spchip button:hover{background:var(--accent-soft);color:var(--danger)}
+
+.admins-panel{max-width:760px;margin-top:22px;gap:12px}
+.admin-add{display:flex;gap:8px;flex-wrap:wrap;border:0;padding:0;background:none;max-width:none}
+.admin-add input{flex:1;min-width:200px}
+.sheet .actions .btn{flex:0 1 auto}
+
+/* Sexe */
+.sx{width:.85em;height:.85em;margin-left:4px;vertical-align:-.05em;color:var(--c,var(--accent));opacity:.85}
+.sheet h3 .sx{width:.7em;height:.7em}
+.sexe-row{display:grid;gap:6px}
+.sexe-label{font-size:.88rem;font-weight:700}
 .gate{max-width:480px;margin-block:28px}
 .gate h2{margin-top:0}
 .foot{margin-top:18px;text-align:center}
@@ -257,7 +285,7 @@ button.chip:hover{border-color:var(--c);background:var(--t)}
       <button class="btn" id="empty-add">Ajouter le grand-père</button>
     </div>
     <div class="empty" id="tree-loading">Chargement de l'arbre…</div>
-    <p class="foot"><button class="link" id="forget-code">Changer de code famille</button></p>
+    <p class="foot" id="foot-code" hidden><button class="link" id="forget-code">Changer de code famille</button></p>
   </section>
 
   <section id="view-proposer" hidden>
@@ -275,19 +303,28 @@ button.chip:hover{border-color:var(--c);background:var(--t)}
         <label>Prénom <input id="f-prenom" autocomplete="off"></label>
         <label>Nom <input id="f-nom" autocomplete="off"></label>
       </div>
+      <div class="sexe-row"><span class="sexe-label">Sexe</span>
+        <div class="seg" role="radiogroup" aria-label="Sexe">
+          <label><input type="radio" name="sexe" id="s-h" value="H"> Homme</label>
+          <label><input type="radio" name="sexe" id="s-f" value="F"> Femme</label>
+        </div>
+      </div>
       <label>Où vit-il ou elle aujourd'hui ? <span class="hint">ville et pays</span><input id="f-habite" placeholder="ex. Lille, France"></label>
       <div class="row">
         <label>Naissance <span class="hint">année ou date</span><input id="f-naissance" placeholder="ex. 1974"></label>
         <label>Décès <span class="hint">si concerné</span><input id="f-deces"></label>
       </div>
       <label>Lieu de naissance <span class="hint">facultatif, si connu</span><input id="f-lieu"></label>
-      <div id="wrap-links" style="display:grid;gap:15px">
+      <fieldset id="wrap-links" class="links-box">
+        <legend>Liens familiaux</legend>
         <div class="row">
           <label>Enfant de <select id="f-parent"></select></label>
           <label>et de <select id="f-parent2"></select></label>
         </div>
-        <label>Marié(e) à <select id="f-conjoint"></select></label>
-      </div>
+        <div class="hint-line" id="f-hint" hidden></div>
+        <label><span id="f-conj-label">Marié(e) à</span> <select id="f-conjoint"></select></label>
+        <div class="hint-line" id="f-conj-hint" hidden></div>
+      </fieldset>
       <label>Souvenir ou anecdote <span class="hint">facultatif</span><textarea id="f-anecdote"></textarea></label>
       <label>Photo <span class="hint">facultatif</span><input type="file" id="f-photo" accept="image/*"></label>
       <label>Votre prénom <span class="hint">pour que l'administrateur sache qui propose</span><input id="f-auteur" autocomplete="given-name"></label>
@@ -310,6 +347,15 @@ button.chip:hover{border-color:var(--c);background:var(--t)}
       <h3 class="sub">Propositions en attente</h3>
       <p class="lead">Vérifie, corrige si besoin, puis valide. Rien n'apparaît dans l'arbre sans ton accord.</p>
       <div class="queue" id="queue"></div>
+      <div id="admins-panel" class="panel admins-panel" hidden>
+        <h3 class="sub" style="margin:0">Co-administrateurs</h3>
+        <p class="meta" style="margin:0">Ils pourront valider ou refuser les propositions et modifier les liens familiaux, comme toi. Seul toi peux ajouter ou retirer un co-administrateur. Il leur faut un compte Google.</p>
+        <div class="spchips" id="admins-list"></div>
+        <form id="admin-add" class="admin-add" novalidate>
+          <input id="admin-email" type="email" placeholder="adresse Gmail" autocomplete="off" autocapitalize="off">
+          <button class="btn sm" type="submit">Ajouter</button>
+        </form>
+      </div>
     </div>
   </section>
 </main>
@@ -320,7 +366,7 @@ button.chip:hover{border-color:var(--c);background:var(--t)}
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
-import { getFirestore, collection, doc, onSnapshot, addDoc, getDocs, writeBatch, deleteDoc, serverTimestamp, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+import { getFirestore, collection, doc, onSnapshot, addDoc, getDocs, getDoc, setDoc, writeBatch, deleteDoc, serverTimestamp, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
 
 const firebaseConfig = {
@@ -331,7 +377,7 @@ const firebaseConfig = {
   messagingSenderId: "744904321896",
   appId: "1:744904321896:web:062927385c866c348804dd"
 };
-const ADMIN_EMAIL = "cpoundy@gmail.com";
+const ADMIN_EMAIL = "cpoundy@gmail.com"; // administrateur principal
 const CODE_KEY = "swima-family-code";
 
 const fb = initializeApp(firebaseConfig);
@@ -356,6 +402,15 @@ const PIN = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s7-6.2 7
 const CRES = '<svg class="cres" viewBox="0 0 24 24" aria-label="Décédé(e)" role="img"><path d="M15.5 3.2A9 9 0 1 0 15.5 20.8 7.2 7.2 0 1 1 15.5 3.2z" fill="currentColor"/><path d="M18.6 8.4l.75 1.55 1.7.25-1.23 1.2.29 1.69-1.51-.8-1.51.8.29-1.69-1.23-1.2 1.7-.25z" fill="currentColor"/></svg>';
 const byBirth = (a, b) => (a.naissance || "9999").localeCompare(b.naissance || "9999");
 const FIELDS = ["prenom", "nom", "habite", "naissance", "deces", "lieu", "anecdote"];
+const SEX_ICON = {
+  H: '<svg class="sx" viewBox="0 0 24 24" role="img" aria-label="Homme"><circle cx="10" cy="14" r="5.5" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M14 10l6-6M15 4h5v5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  F: '<svg class="sx" viewBox="0 0 24 24" role="img" aria-label="Femme"><circle cx="12" cy="9" r="5.5" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M12 14.5V22M8.5 18.5h7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>'
+};
+const sexIcon = p => SEX_ICON[p.sexe] || "";
+const sexTxt = x => x === "H" ? "Homme" : x === "F" ? "Femme" : x;
+const g = (p, h, f, n) => p.sexe === "H" ? h : p.sexe === "F" ? f : n;
+const getSexe = () => ($("s-h").checked && "H") || ($("s-f").checked && "F") || "";
+const setSexe = x => { $("s-h").checked = x === "H"; $("s-f").checked = x === "F"; };
 const LABELS = { prenom: "Prénom", nom: "Nom", habite: "Lieu de vie", naissance: "Naissance", deces: "Décès", lieu: "Lieu de naissance", anecdote: "Anecdote" };
 const col = name => collection(db, "families", S.code, name);
 
@@ -388,7 +443,7 @@ function enter(code) {
     $("tree-loading").hidden = true;
     renderTree(); refreshSelects();
   }, () => { writeCode(null); location.reload(); });
-  if (S.isAdmin) watchPending();
+  checkAdmin();
 }
 
 (async function boot() {
@@ -431,7 +486,7 @@ function computeBranches() {
 const cv = b => `--c:var(--b${b});--t:var(--t${b})`;
 function cardHTML(p) {
   const b = BR[p.id] ?? 0;
-  return `<button class="card${p.id === lastAdded ? " new" : ""}" style="${cv(b)}" data-id="${p.id}">${avatar(p)}<span class="pn">${esc(p.prenom)}</span><span class="nn">${esc(p.nom)}</span>${p.habite && !p.deces ? `<span class="hb">${PIN}${esc(p.habite)}</span>` : ""}${yearsTxt(p) ? `<span class="yr${p.deces ? " dead" : ""}">${p.deces ? CRES : ""}${esc(yearsTxt(p))}</span>` : ""}</button>`;
+  return `<button class="card${p.id === lastAdded ? " new" : ""}" style="${cv(b)}" data-id="${p.id}">${avatar(p)}<span class="pn">${esc(p.prenom)}${sexIcon(p)}</span><span class="nn">${esc(p.nom)}</span>${p.habite && !p.deces ? `<span class="hb">${PIN}${esc(p.habite)}</span>` : ""}${yearsTxt(p) ? `<span class="yr${p.deces ? " dead" : ""}">${p.deces ? CRES : ""}${esc(yearsTxt(p))}</span>` : ""}</button>`;
 }
 function kidList(kids, seen, b) { const k = kids.filter(x => !seen.has(x.id)); return k.length ? `<ul style="--pc:var(--b${b})">${k.map(x => node(x, seen, BR[x.id] ?? b)).join("")}</ul>` : ""; }
 function node(p, seen, lineB) {
@@ -559,22 +614,68 @@ function openSheet(id) {
     <dl>
       ${p.habite ? `<dt>${p.deces ? "Vivait à" : "Vit à"}</dt><dd>${esc(p.habite)}</dd>` : ""}
       ${yearsTxt(p) ? `<dt>${p.deces ? "Vie" : "Naissance"}</dt><dd>${esc(yearsTxt(p))}</dd>` : ""}
-      ${p.lieu ? `<dt>Né(e) à</dt><dd>${esc(p.lieu)}</dd>` : ""}
-      ${par ? `<dt>Parents</dt><dd>${esc(par)}</dd>` : ""}
-      ${sps.length ? `<dt>${sps.length > 1 ? "Épouses" : "Conjoint"}</dt><dd>${esc(sps.map(s => s.prenom + " " + s.nom).join(", "))}</dd>` : ""}
+      ${p.lieu ? `<dt>${g(p, "Né à", "Née à", "Né(e) à")}</dt><dd>${esc(p.lieu)}</dd>` : ""}
+      ${par ? `<dt>${g(p, "Fils de", "Fille de", "Enfant de")}</dt><dd>${esc(par)}</dd>` : ""}
+      ${sps.length ? `<dt>${g(p, sps.length > 1 ? "Époux de" : "Époux de", "Épouse de", "Marié(e) à")}</dt><dd>${esc(sps.map(s => s.prenom + " " + s.nom).join(", "))}</dd>` : ""}
       ${kids ? `<dt>Enfants</dt><dd>${esc(kids)}</dd>` : ""}
     </dl>
     ${p.anecdote ? `<div class="story">${esc(p.anecdote)}</div>` : ""}
-    <div class="actions"><button class="btn" id="s-child">Ajouter un enfant</button><button class="btn soft" id="s-fix">Proposer une correction</button><button class="btn ghost" id="s-close">Fermer</button></div>
-    ${S.isAdmin ? `<div class="actions admin-zone"><span class="meta">Admin</span><button class="btn danger sm" id="s-del">Supprimer cette fiche</button></div>` : ""}`;
+    <div class="actions"><button class="btn" id="s-child">Ajouter un enfant</button><button class="btn" id="s-spouse">${g(p, "Ajouter une épouse", "Ajouter un époux", "Ajouter un conjoint")}</button><button class="btn soft" id="s-fix">Proposer une correction</button><button class="btn ghost" id="s-close">Fermer</button></div>
+    ${S.isAdmin ? `<div class="admin-zone links-edit">
+      <div><b>Sexe et liens familiaux</b> <span class="meta">· admin, appliqué tout de suite</span></div>
+      <label>Sexe<select id="l-sexe"><option value="">Non précisé</option><option value="H">Homme</option><option value="F">Femme</option></select></label>
+      <div class="row"><label>Enfant de<select id="l-p1"></select></label><label>et de<select id="l-p2"></select></label></div>
+      <div class="hint-line" id="l-hint" hidden></div>
+      <div><span class="meta">Conjoint(s)</span><div class="spchips" id="l-sps"></div></div>
+      <label>Ajouter un conjoint<select id="l-add"></select></label>
+      <div class="actions"><button class="btn sm" id="l-save">Enregistrer les liens</button><button class="btn danger sm" id="s-del">Supprimer cette fiche</button></div>
+    </div>` : ""}`;
   $("sheet-bg").hidden = false;
   $("s-close").onclick = closeSheet;
   $("s-fix").onclick = () => { closeSheet(); prepForm("fix", id); show("proposer"); };
   $("s-child").onclick = () => { closeSheet(); prepForm("new", null, id); show("proposer"); };
+  $("s-spouse").onclick = () => { closeSheet(); prepForm("new", null, null, id); show("proposer"); };
+  if (S.isAdmin) linkEditor(p);
   if (S.isAdmin) $("s-del").onclick = e => {
     const b = e.currentTarget;
     if (!b.dataset.armed) { b.dataset.armed = "1"; b.textContent = "Confirmer la suppression"; return; }
     deletePerson(id);
+  };
+}
+function linkEditor(p) {
+  const blocked = blockedFor(p.id);
+  let sps = (p.conjoints || []).filter(id => byId(id));
+  const p1 = $("l-p1"), p2 = $("l-p2"), add = $("l-add");
+  $("l-sexe").value = p.sexe || "";
+  p1.innerHTML = personOptions("Personne / inconnu", blocked);
+  p1.value = (p.parents || [])[0] || "";
+  const fillP2 = keep => {
+    p2.innerHTML = partnerOptions(p1.value, "Personne / inconnu", blocked);
+    p2.value = keep && keep !== p1.value ? keep : "";
+    const h = partnerHint(p1.value); $("l-hint").innerHTML = h; $("l-hint").hidden = !h;
+  };
+  fillP2((p.parents || [])[1] || "");
+  p1.onchange = () => { fillP2(p2.value); const s = byId(p1.value) ? spouses(byId(p1.value)) : []; if (!p2.value && s.length === 1) p2.value = s[0].id; };
+  const drawSps = () => {
+    $("l-sps").innerHTML = sps.length ? sps.map(id => `<span class="spchip">${esc(fullName(byId(id)))}<button type="button" data-rm="${id}" aria-label="Retirer">×</button></span>`).join("") : '<span class="meta">Aucun</span>';
+    $("l-sps").querySelectorAll("[data-rm]").forEach(b => b.onclick = () => { sps = sps.filter(x => x !== b.dataset.rm); drawSps(); });
+    add.innerHTML = personOptions("Choisir une personne", new Set([...blocked, ...sps]));
+  };
+  drawSps();
+  add.onchange = () => { if (add.value) { sps.push(add.value); drawSps(); } };
+  $("l-save").onclick = async () => {
+    if (p1.value && p1.value === p2.value) { toast("Les deux parents doivent être différents."); return; }
+    const P = id => doc(db, "families", S.code, "persons", id);
+    const parents = [p1.value, p2.value].filter(Boolean);
+    const before = (p.conjoints || []);
+    const batch = writeBatch(db);
+    batch.update(P(p.id), { parents, conjoints: sps, sexe: $("l-sexe").value });
+    sps.filter(id => !before.includes(id)).forEach(id => batch.update(P(id), { conjoints: arrayUnion(p.id) }));
+    before.filter(id => !sps.includes(id) && byId(id)).forEach(id => batch.update(P(id), { conjoints: arrayRemove(p.id) }));
+    if (parents.length === 2) { batch.update(P(parents[0]), { conjoints: arrayUnion(parents[1]) }); batch.update(P(parents[1]), { conjoints: arrayUnion(parents[0]) }); }
+    $("l-save").disabled = true;
+    try { await batch.commit(); lastAdded = p.id; closeSheet(); toast("Liens enregistrés."); }
+    catch (e) { toast("L'enregistrement a échoué. Vérifie ta connexion."); $("l-save").disabled = false; }
   };
 }
 function closeSheet() { $("sheet-bg").hidden = true; }
@@ -595,27 +696,79 @@ async function deletePerson(id) {
 }
 
 /* ---------- Formulaire ---------- */
-function personOptions(empty) {
-  return `<option value="">${empty}</option>` + S.persons.slice().sort((a, b) => (a.prenom || "").localeCompare(b.prenom || "")).map(p => `<option value="${p.id}">${esc((p.prenom || "") + " " + (p.nom || ""))}${p.naissance ? " (" + esc(p.naissance) + ")" : ""}</option>`).join("");
+const optHTML = p => `<option value="${p.id}">${esc((p.prenom || "") + " " + (p.nom || ""))}${p.naissance ? " (" + esc(p.naissance) + ")" : ""}</option>`;
+const sortedPersons = exclude => S.persons.filter(p => !exclude || !exclude.has(p.id)).sort((a, b) => (a.prenom || "").localeCompare(b.prenom || ""));
+function personOptions(empty, exclude) {
+  return `<option value="">${empty}</option>` + sortedPersons(exclude).map(optHTML).join("");
 }
+// Liste pour le 2e parent : les conjoints du 1er parent en tête
+function partnerOptions(p1Id, empty, exclude) {
+  const p1 = byId(p1Id);
+  const sps = p1 ? spouses(p1).filter(s => !exclude || !exclude.has(s.id)) : [];
+  if (!sps.length) return personOptions(empty, exclude);
+  const ex = new Set([...(exclude || []), ...sps.map(s => s.id)]);
+  return `<option value="">${empty}</option><optgroup label="Conjoint(s) de ${esc(p1.prenom)}">${sps.map(optHTML).join("")}</optgroup><optgroup label="Autres personnes">${sortedPersons(ex).map(optHTML).join("")}</optgroup>`;
+}
+// Une personne ne peut pas être le parent de ses ancêtres : on exclut elle-même et ses descendants
+function descendants(id) {
+  const out = new Set();
+  const walk = x => S.persons.forEach(c => { if ((c.parents || []).includes(x) && !out.has(c.id)) { out.add(c.id); walk(c.id); } });
+  walk(id); return out;
+}
+const blockedFor = id => id ? new Set([id, ...descendants(id)]) : null;
+const fullName = p => p ? (p.prenom || "") + " " + (p.nom || "") : "";
+function partnerHint(p1Id) {
+  const p1 = byId(p1Id); if (!p1) return "";
+  const sps = spouses(p1);
+  return sps.length
+    ? `${esc(p1.prenom)} est marié(e) à : <b>${esc(sps.map(fullName).join(", "))}</b>. Choisis l'autre parent dans la liste « et de ».`
+    : `${esc(p1.prenom)} n'a pas encore de conjoint enregistré. Si tu choisis l'autre parent, ils seront reliés comme couple.`;
+}
+const formTarget = () => $("k-fix").checked ? $("f-target").value : "";
 function refreshSelects() {
   const keep = ["f-target", "f-parent", "f-parent2", "f-conjoint"].map(i => $(i).value);
+  const blocked = blockedFor(formTarget());
   $("f-target").innerHTML = personOptions("Choisir la personne");
-  $("f-parent").innerHTML = personOptions("Personne / inconnu");
-  $("f-parent2").innerHTML = personOptions("Personne / inconnu");
-  $("f-conjoint").innerHTML = personOptions("Personne");
+  $("f-parent").innerHTML = personOptions("Personne / inconnu", blocked);
+  $("f-parent2").innerHTML = partnerOptions(keep[1], "Personne / inconnu", blocked);
+  $("f-conjoint").innerHTML = personOptions("Personne", blocked);
   ["f-target", "f-parent", "f-parent2", "f-conjoint"].forEach((i, n) => $(i).value = keep[n]);
+  updateFormHints();
 }
+function updateFormHints() {
+  const h = partnerHint($("f-parent").value);
+  $("f-hint").innerHTML = h; $("f-hint").hidden = !h;
+  const t = byId(formTarget()), sps = t ? spouses(t) : [];
+  $("f-conj-label").textContent = t ? (sps.length ? "Ajouter un conjoint" : "Marié(e) à") : "Marié(e) à";
+  $("f-conj-hint").innerHTML = sps.length ? `Déjà marié(e) à : <b>${esc(sps.map(fullName).join(", "))}</b>` : "";
+  $("f-conj-hint").hidden = !sps.length;
+}
+$("f-parent").onchange = () => {
+  const p1 = $("f-parent").value, keep = $("f-parent2").value;
+  $("f-parent2").innerHTML = partnerOptions(p1, "Personne / inconnu", blockedFor(formTarget()));
+  $("f-parent2").value = keep && keep !== p1 ? keep : "";
+  const sps = byId(p1) ? spouses(byId(p1)) : [];
+  if (!$("f-parent2").value && sps.length === 1) $("f-parent2").value = sps[0].id;
+  updateFormHints();
+};
 function setKind(k) {
   $("k-new").checked = k === "new"; $("k-fix").checked = k === "fix";
-  $("wrap-target").hidden = k !== "fix"; $("wrap-links").hidden = k === "fix";
+  $("wrap-target").hidden = k !== "fix";
 }
-function prepForm(kind, target, parent) {
+function prepForm(kind, target, parent, spouseOf) {
   refreshSelects(); setKind(kind); $("f-err").hidden = true;
-  FIELDS.forEach(f => $("f-" + f).value = ""); $("f-nom").value = "Swima"; $("f-photo").value = "";
+  FIELDS.forEach(f => $("f-" + f).value = ""); $("f-nom").value = ""; $("f-photo").value = ""; setSexe("");
   ["f-target", "f-parent", "f-parent2", "f-conjoint"].forEach(i => $(i).value = "");
-  if (kind === "fix" && target) { const p = byId(target); $("f-target").value = target; FIELDS.forEach(f => $("f-" + f).value = p[f] || ""); }
-  if (parent) { const sps = spouses(byId(parent)); $("f-parent").value = parent; if (sps.length === 1) $("f-parent2").value = sps[0].id; }
+  if (kind === "fix" && target) {
+    const p = byId(target); $("f-target").value = target; FIELDS.forEach(f => $("f-" + f).value = p[f] || ""); setSexe(p.sexe || "");
+    refreshSelects();
+    $("f-parent").value = (p.parents || [])[0] || "";
+    $("f-parent2").innerHTML = partnerOptions($("f-parent").value, "Personne / inconnu", blockedFor(target));
+    $("f-parent2").value = (p.parents || [])[1] || "";
+  }
+  if (parent) { $("f-parent").value = parent; $("f-parent").onchange(); }
+  if (spouseOf) { $("f-conjoint").value = spouseOf; const sp = byId(spouseOf); if (sp && sp.sexe) setSexe(sp.sexe === "H" ? "F" : "H"); }
+  updateFormHints();
 }
 document.querySelectorAll("input[name=kind]").forEach(r => r.onchange = () => prepForm(r.value));
 $("f-target").onchange = () => { const id = $("f-target").value; if (id) prepForm("fix", id); };
@@ -634,9 +787,12 @@ $("form").onsubmit = async e => {
   if (kind === "fix" && !$("f-target").value) return err("Choisis la fiche à corriger.");
   if (!$("f-prenom").value.trim()) return err("Le prénom est obligatoire.");
   if (!$("f-auteur").value.trim()) return err("Indique ton prénom pour que l'administrateur sache qui propose.");
+  if (!getSexe()) return err("Indique s'il s'agit d'un homme ou d'une femme.");
   const data = {}; FIELDS.forEach(f => data[f] = $("f-" + f).value.trim().slice(0, f === "anecdote" ? 2000 : 120));
+  data.sexe = getSexe();
   data.photo = await readPhoto();
-  if (kind === "new") { data.parent = $("f-parent").value; data.parent2 = $("f-parent2").value; data.conjoint = $("f-conjoint").value; }
+  data.parent = $("f-parent").value; data.parent2 = $("f-parent2").value; data.conjoint = $("f-conjoint").value;
+  if (data.parent && data.parent === data.parent2) return err("Les deux parents doivent être des personnes différentes.");
   $("f-send").disabled = true; $("f-send").textContent = "Envoi…";
   try {
     await addDoc(col("pending"), { kind, target: kind === "fix" ? $("f-target").value : "", auteur: $("f-auteur").value.trim().slice(0, 60), date: new Date().toLocaleDateString("fr-FR"), data, createdAt: serverTimestamp() });
@@ -652,17 +808,55 @@ $("login").onclick = async () => {
   catch (e) { if (e && (e.code === "auth/popup-blocked" || e.code === "auth/operation-not-supported-in-this-environment")) signInWithRedirect(auth, provider); else toast("Connexion annulée ou impossible."); }
 };
 $("logout").onclick = $("logout-wrong").onclick = () => signOut(auth);
-onAuthStateChanged(auth, user => {
-  S.user = user;
-  S.isAdmin = !!user && user.email === ADMIN_EMAIL && user.emailVerified;
+let unsubAdmins = null;
+const isOwnerUser = u => !!u && u.emailVerified && (u.email || "").toLowerCase() === ADMIN_EMAIL;
+async function checkAdmin() {
+  const user = S.user;
+  let ok = isOwnerUser(user);
+  if (!ok && user && user.emailVerified && S.code) {
+    try { ok = (await getDoc(doc(db, "families", S.code, "admins", (user.email || "").toLowerCase()))).exists(); } catch (e) { ok = false; }
+  }
+  if (user !== S.user) return;
+  applyAdmin(user, ok);
+}
+onAuthStateChanged(auth, user => { S.user = user; applyAdmin(user, isOwnerUser(user)); checkAdmin(); });
+function applyAdmin(user, ok) {
+  const was = S.isAdmin;
+  S.isAdmin = ok;
+  $("foot-code").hidden = !ok;
   $("gate").hidden = S.isAdmin; $("admin-body").hidden = !S.isAdmin;
   $("login").hidden = !!user; $("logout-wrong").hidden = !user || S.isAdmin;
   $("gate-msg").textContent = user && !S.isAdmin
     ? `Le compte ${user.email} n'est pas administrateur de l'arbre.`
     : "Cet espace est réservé à l'administrateur de l'arbre. Connecte-toi avec ton compte Google.";
-  if (S.isAdmin) { $("admin-who").textContent = "Connecté : " + user.email; if (S.code) watchPending(); }
-  else { unsubPending && unsubPending(); unsubPending = null; S.pending = []; updateBadge(); }
-});
+  if (S.isAdmin) {
+    $("admin-who").textContent = "Connecté : " + user.email + (isOwnerUser(user) ? " (administrateur principal)" : " (co-administrateur)");
+    if (S.code && (!was || !unsubPending)) watchPending();
+  } else { unsubPending && unsubPending(); unsubPending = null; S.pending = []; updateBadge(); }
+  const owner = S.isAdmin && isOwnerUser(user);
+  $("admins-panel").hidden = !owner;
+  if (owner && S.code && !unsubAdmins) watchAdmins();
+  if (!owner && unsubAdmins) { unsubAdmins(); unsubAdmins = null; }
+}
+function watchAdmins() {
+  unsubAdmins = onSnapshot(col("admins"), snap => {
+    const list = snap.docs.map(d => d.id).sort();
+    $("admins-list").innerHTML = `<div class="spchip">${esc(ADMIN_EMAIL)} <span class="meta">principal</span></div>` +
+      list.map(e => `<span class="spchip">${esc(e)}<button type="button" data-rm="${esc(e)}" aria-label="Retirer">×</button></span>`).join("");
+    $("admins-list").querySelectorAll("[data-rm]").forEach(b => b.onclick = async () => {
+      if (!b.dataset.armed) { b.dataset.armed = "1"; b.textContent = "Retirer ?"; b.style.width = "auto"; b.style.padding = "0 8px"; return; }
+      try { await deleteDoc(doc(db, "families", S.code, "admins", b.dataset.rm)); toast("Administrateur retiré."); } catch (e) { toast("Action impossible."); }
+    });
+  }, () => {});
+}
+$("admin-add").onsubmit = async e => {
+  e.preventDefault();
+  const email = $("admin-email").value.trim().toLowerCase();
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { toast("Adresse e-mail invalide."); return; }
+  if (email === ADMIN_EMAIL) { toast("C'est déjà l'administrateur principal."); return; }
+  try { await setDoc(doc(db, "families", S.code, "admins", email), { ajouteLe: serverTimestamp() }); $("admin-email").value = ""; toast("Co-administrateur ajouté."); }
+  catch (e2) { toast("Ajout impossible. As-tu bien mis à jour les règles Firestore ?"); }
+};
 function watchPending() {
   unsubPending && unsubPending();
   unsubPending = onSnapshot(col("pending"), snap => {
@@ -674,22 +868,26 @@ function updateBadge() { const n = S.pending.length; $("badge").textContent = n;
 function renderAdmin() {
   if (!S.isAdmin) return;
   if (!S.pending.length) { $("queue").innerHTML = '<div class="empty">Aucune proposition en attente. Tout est à jour.</div>'; return; }
-  const opts = personOptions("Personne / inconnu");
   $("queue").innerHTML = S.pending.map(q => {
     const d = q.data || {}; const t = q.kind === "fix" ? byId(q.target) : null;
+    const blocked = t ? blockedFor(t.id) : null;
+    const lv = linkValues(q, t);
+    const opts = personOptions("Personne / inconnu", blocked);
     let diff = "";
     if (q.kind === "fix") {
       if (!t) diff = `<div class="diff">La fiche visée n'existe plus. Tu peux refuser cette proposition.</div>`;
-      else { const ch = FIELDS.filter(f => (t[f] || "") !== (d[f] || "")); diff = `<div class="diff">${ch.length ? ch.map(f => `<div><b>${LABELS[f]} :</b> <s>${esc(t[f] || "vide")}</s> → ${esc(d[f] || "vide")}</div>`).join("") : "<div>Aucun changement détecté.</div>"}${d.photo ? "<div><b>Photo :</b> nouvelle photo jointe</div>" : ""}</div>`; }
+      else { const ch = ["sexe", ...FIELDS].filter(f => d[f] !== undefined && (t[f] || "") !== (d[f] || "")); diff = `<div class="diff">${ch.length ? ch.map(f => `<div><b>${LABELS[f] || "Sexe"} :</b> <s>${esc(sexTxt(t[f]) || "vide")}</s> → ${esc(sexTxt(d[f]) || "vide")}</div>`).join("") : "<div>Aucun changement dans les infos.</div>"}${linkDiff(t, d)}${d.photo ? "<div><b>Photo :</b> nouvelle photo jointe</div>" : ""}</div>`; }
     }
     return `<article class="prop" data-q="${q.id}">
       <div class="prop-head"><span class="pill">${q.kind === "fix" ? "Correction" : "Nouvelle personne"}</span><span class="meta">Proposé par ${esc(q.auteur)} le ${esc(q.date)}</span></div>
       ${q.kind === "fix" ? `<div><b>Fiche :</b> ${t ? esc(t.prenom + " " + t.nom) : "introuvable"}</div>${diff}` : ""}
       <div class="row"><label>Prénom<input data-f="prenom" value="${esc(d.prenom)}"></label><label>Nom<input data-f="nom" value="${esc(d.nom)}"></label></div>
+      <label>Sexe<select data-f="sexe"><option value="">Non précisé</option><option value="H">Homme</option><option value="F">Femme</option></select></label>
       <label>Lieu de vie<input data-f="habite" value="${esc(d.habite)}"></label>
       <div class="row"><label>Naissance<input data-f="naissance" value="${esc(d.naissance)}"></label><label>Décès<input data-f="deces" value="${esc(d.deces)}"></label></div>
       <label>Lieu de naissance<input data-f="lieu" value="${esc(d.lieu)}"></label>
-      ${q.kind === "new" ? `<div class="row"><label>Enfant de<select data-f="parent">${opts}</select></label><label>et de<select data-f="parent2">${opts}</select></label></div><label>Marié(e) à<select data-f="conjoint">${opts}</select></label>` : ""}
+      <div class="row"><label>Enfant de<select data-f="parent">${opts}</select></label><label>et de<select data-f="parent2">${partnerOptions(lv.parent, "Personne / inconnu", blocked)}</select></label></div>
+      <label>${t && spouses(t).length ? "Ajouter un conjoint" : "Marié(e) à"}<select data-f="conjoint">${opts}</select></label>
       <label>Anecdote<textarea data-f="anecdote">${esc(d.anecdote)}</textarea></label>
       ${safeImg(d.photo) ? `<div class="actions">${avatar({ photo: d.photo })}<span class="meta">Photo jointe</span></div>` : ""}
       <div class="actions"><button class="btn sm" data-act="ok" ${q.kind === "fix" && !t ? "disabled" : ""}>Valider</button><button class="btn danger sm" data-act="no">Refuser</button></div>
@@ -697,7 +895,16 @@ function renderAdmin() {
   }).join("");
   $("queue").querySelectorAll(".prop").forEach(el => {
     const q = S.pending.find(x => x.id === el.dataset.q);
-    el.querySelectorAll("select[data-f]").forEach(s => s.value = (q.data || {})[s.dataset.f] || "");
+    const t = q.kind === "fix" ? byId(q.target) : null, lv = linkValues(q, t);
+    el.querySelectorAll("select[data-f]").forEach(s => s.value = lv[s.dataset.f] || "");
+    el.querySelector('[data-f="sexe"]').value = (q.data || {}).sexe || (t && t.sexe) || "";
+    const p1 = el.querySelector('[data-f="parent"]'), p2 = el.querySelector('[data-f="parent2"]');
+    p1.onchange = () => {
+      const keep = p2.value; p2.innerHTML = partnerOptions(p1.value, "Personne / inconnu", t ? blockedFor(t.id) : null);
+      p2.value = keep && keep !== p1.value ? keep : "";
+      const sps = byId(p1.value) ? spouses(byId(p1.value)) : [];
+      if (!p2.value && sps.length === 1) p2.value = sps[0].id;
+    };
     el.querySelector("[data-act=ok]").onclick = () => approve(q, el);
     el.querySelector("[data-act=no]").onclick = async () => {
       try { await deleteDoc(doc(db, "families", S.code, "pending", q.id)); toast("Proposition refusée."); }
@@ -705,16 +912,38 @@ function renderAdmin() {
     };
   });
 }
+// Liens proposés, ou liens actuels pour les anciennes corrections qui n'en contenaient pas
+function linkValues(q, t) {
+  const d = q.data || {};
+  if (q.kind === "fix" && t && d.parent === undefined) return { parent: (t.parents || [])[0] || "", parent2: (t.parents || [])[1] || "", conjoint: "" };
+  return { parent: d.parent || "", parent2: d.parent2 || "", conjoint: d.conjoint || "" };
+}
+function linkDiff(t, d) {
+  if (!t || d.parent === undefined) return "";
+  const names = ids => ids.map(byId).filter(Boolean).map(fullName).join(" et ") || "inconnus";
+  const before = (t.parents || []).slice().sort().join(), after = [d.parent, d.parent2].filter(Boolean).sort().join();
+  let out = "";
+  if (before !== after) out += `<div><b>Parents :</b> <s>${esc(names(t.parents || []))}</s> → ${esc(names([d.parent, d.parent2].filter(Boolean)))}</div>`;
+  if (d.conjoint && !(t.conjoints || []).includes(d.conjoint)) out += `<div><b>Nouveau conjoint :</b> ${esc(fullName(byId(d.conjoint)))}</div>`;
+  return out;
+}
 async function approve(q, el) {
   const v = {}; el.querySelectorAll("[data-f]").forEach(i => v[i.dataset.f] = i.value.trim());
   if (!v.prenom) { toast("Le prénom est obligatoire."); return; }
   const P = id => doc(db, "families", S.code, "persons", id);
   const batch = writeBatch(db);
   const fields = {}; FIELDS.forEach(f => fields[f] = v[f] || "");
+  fields.sexe = v.sexe || "";
   const photo = safeImg((q.data || {}).photo);
   if (q.kind === "fix") {
     if (!byId(q.target)) { toast("La fiche n'existe plus."); return; }
     if (photo) fields.photo = photo;
+    const blocked = blockedFor(q.target);
+    const parents = [v.parent, v.parent2].filter((x, i, a) => x && a.indexOf(x) === i && byId(x) && !blocked.has(x));
+    fields.parents = parents;
+    const conj = v.conjoint && byId(v.conjoint) && !blocked.has(v.conjoint) ? v.conjoint : null;
+    if (conj) { fields.conjoints = arrayUnion(conj); batch.update(P(conj), { conjoints: arrayUnion(q.target) }); }
+    if (parents.length === 2) { batch.update(P(parents[0]), { conjoints: arrayUnion(parents[1]) }); batch.update(P(parents[1]), { conjoints: arrayUnion(parents[0]) }); }
     batch.update(P(q.target), fields); lastAdded = q.target;
   } else {
     const ref = doc(col("persons"));
