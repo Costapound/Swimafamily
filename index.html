@@ -29,6 +29,8 @@ img{max-width:100%}
 /* Layout : un album de famille chaleureux. Bandeau d'accueil, onglets collants, arbre posé sur un fond doux, une couleur par branche. */
 
 /* Layout : un album de famille chaleureux. Bandeau d'accueil, onglets collants, arbre posé sur un fond doux, une couleur par branche. */
+
+/* Layout : un album de famille chaleureux. Bandeau d'accueil, onglets collants, arbre posé sur un fond doux, une couleur par branche. */
 :root{
   --bg:#F7EFE6; --surface:#FFFCF8; --sunk:#F1E5D8; --fg:#2E241D; --muted:#7A6A5D; --line:#D9C6B3;
   --accent:#B4552E; --accent-soft:#F6DDCF; --accent-fg:#FFFFFF;
@@ -224,6 +226,33 @@ button.chip:hover{border-color:var(--c);background:var(--t)}
 .sheet h3 .sx{width:.7em;height:.7em}
 .sexe-row{display:grid;gap:6px}
 .sexe-label{font-size:.88rem;font-weight:700}
+
+/* Impression */
+.print-panel{display:grid;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin-bottom:12px;max-width:560px}
+#print-area{display:none}
+#print-area.measuring{display:block;position:absolute;left:-100000px;top:0}
+#print-area{
+  --bg:#FFFFFF; --surface:#FFFFFF; --sunk:#F1E5D8; --fg:#2E241D; --muted:#7A6A5D; --line:#CDB8A3;
+  --accent:#B4552E; --accent-soft:#F6DDCF;
+  --b0:#B4552E; --b1:#C98A1E; --b2:#2F7F78; --b3:#8E4F86; --b4:#5E7F2E; --b5:#C2466A;
+  --t0:#F6DDCF; --t1:#F7E8C6; --t2:#D6EBE8; --t3:#EEDDEA; --t4:#E1EBCF; --t5:#F6D9E1;
+  --b6:#3F6FB0; --b7:#9A5B2A; --b8:#5E7684; --b9:#6B5BB5;
+  --t6:#DCE6F4; --t7:#F0E1D3; --t8:#E0E7EB; --t9:#E6E2F5;
+  color:var(--fg);background:#fff;font-family:var(--body)
+}
+.pr-head{display:flex;align-items:baseline;gap:14px;margin-bottom:14px;border-bottom:2px solid var(--accent);padding-bottom:8px}
+.pr-title{font-family:var(--display);font-size:24px;color:var(--accent)}
+.pr-sub{font-size:13px;color:var(--muted)}
+.pr-tree{margin:0 auto}
+#print-area .card{box-shadow:none;border:1px solid var(--line)}
+@media print{
+  body{background:#fff!important}
+  body>*:not(#print-area){display:none!important}
+  #print-area{display:block!important}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  :root{padding:0!important}
+  body::before{display:none!important}
+}
 .gate{max-width:480px;margin-block:28px}
 .gate h2{margin-top:0}
 .foot{margin-top:18px;text-align:center}
@@ -276,7 +305,14 @@ button.chip:hover{border-color:var(--c);background:var(--t)}
         <span class="zgroup"><button class="zbtn" id="z-out" aria-label="Dézoomer">−</button><span id="z-val">100 %</span><button class="zbtn" id="z-in" aria-label="Zoomer">+</button></span>
         <button class="btn soft sm" id="z-fit">Vue d'ensemble</button>
         <button class="btn ghost sm" id="z-full">Agrandir</button>
+        <button class="btn ghost sm" id="z-print">Imprimer / PDF</button>
         <span class="zhint" id="z-hint">Pincez avec deux doigts pour zoomer, glissez pour vous déplacer.</span>
+      </div>
+      <div class="print-panel" id="print-panel" hidden>
+        <label>Que veux-tu imprimer ?<select id="pr-what"></select></label>
+        <label>Format du papier<select id="pr-size"><option value="A4">A4 (imprimante classique)</option><option value="A3">A3 (plus grand, plus lisible)</option></select></label>
+        <div class="actions"><button class="btn sm" id="pr-go">Imprimer ou enregistrer en PDF</button><button class="btn ghost sm" id="pr-cancel">Annuler</button></div>
+        <p class="meta" style="margin:0">Pour un PDF, choisis « Enregistrer au format PDF » comme imprimante. Sur iPhone ou iPad : Imprimer, puis Partager → Enregistrer dans Fichiers.</p>
       </div>
       <div class="tree-wrap" id="tree-wrap"><div class="tree" id="tree"></div></div>
     </div>
@@ -363,6 +399,8 @@ button.chip:hover{border-color:var(--c);background:var(--t)}
 
 <div class="sheet-bg" id="sheet-bg" hidden><div class="sheet" id="sheet" role="dialog" aria-modal="true"></div></div>
 <div class="toast" id="toast" hidden></div>
+<div id="print-area" aria-hidden="true"></div>
+<style id="print-page"></style>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
@@ -504,7 +542,7 @@ function node(p, seen, lineB) {
 function renderTree() {
   const empty = !S.persons.length;
   $("tree-empty").hidden = !empty; $("tree-stage").hidden = empty;
-  const firstKids = computeBranches();
+  const firstKids = computeBranches(); S.branches = firstKids;
   const seen = new Set();
   let html = rootsList().map(r => node(r, seen, 0)).join("");
   // Sécurité : toute fiche non rattachée (lien cassé) reste visible
@@ -547,6 +585,38 @@ function fitTree() {
 $("z-in").onclick = () => { userZoomed = true; setZoom(Z * 1.25); };
 $("z-out").onclick = () => { userZoomed = true; setZoom(Z / 1.25); };
 $("z-fit").onclick = fitTree;
+
+/* ---------- Impression / PDF ---------- */
+$("z-print").onclick = () => {
+  const panel = $("print-panel"), open = panel.hidden;
+  panel.hidden = !open;
+  if (!open) return;
+  $("pr-what").innerHTML = `<option value="">Tout l'arbre</option>` + (S.branches || []).map(k => `<option value="${k.id}">Branche ${esc(k.prenom)}</option>`).join("");
+};
+$("pr-cancel").onclick = () => $("print-panel").hidden = true;
+$("pr-go").onclick = () => {
+  const what = $("pr-what").value, size = $("pr-size").value;
+  const area = $("print-area");
+  let treeHTML;
+  if (what) { treeHTML = `<ul>${node(byId(what), new Set(), BR[what] ?? 0)}</ul>`; }
+  else { treeHTML = $("tree").innerHTML; }
+  const title = what ? "Branche " + esc(byId(what).prenom) : "Arbre de la famille";
+  area.innerHTML = `<div class="pr-head"><div class="pr-title">Swima Family</div><div class="pr-sub">${title} · ${new Date().toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}</div></div><div class="tree pr-tree">${treeHTML}</div>`;
+  area.querySelectorAll(".card").forEach(c => c.classList.remove("new", "pulse"));
+  // mise à l'échelle pour tenir sur une page en paysage
+  const pageMM = size === "A3" ? [420, 297] : [297, 210];
+  const px = mm => mm * 96 / 25.4;
+  const availW = px(pageMM[0] - 16), availH = px(pageMM[1] - 16) - 70;
+  area.classList.add("measuring");
+  const t = area.querySelector(".pr-tree"); t.style.zoom = 1;
+  const z = Math.min(1, availW / t.scrollWidth, availH / t.scrollHeight);
+  area.classList.remove("measuring");
+  t.style.zoom = z;
+  $("print-page").textContent = `@page { size: ${size} landscape; margin: 8mm; }`;
+  $("print-panel").hidden = true;
+  setTimeout(() => window.print(), 50);
+};
+window.addEventListener("afterprint", () => { $("print-area").innerHTML = ""; });
 function focusPerson(id) {
   const w = wrapEl(), card = $("tree").querySelector(`.card[data-id="${id}"]`);
   if (!card) return;
@@ -606,7 +676,7 @@ function openSheet(id) {
   const p = byId(id); if (!p) return;
   const par = (p.parents || []).map(byId).filter(Boolean).map(x => x.prenom + " " + x.nom).join(" et ");
   const sps = spouses(p);
-  const kids = kidsOf(p).map(k => k.prenom).join(", ");
+  const kids = S.persons.filter(c => (c.parents || []).includes(p.id)).sort(byBirth).map(k => k.prenom).join(", ");
   $("sheet").setAttribute("style", cv(BR[p.id] ?? 0));
   $("sheet").innerHTML = `
     <div class="cover"></div>
@@ -628,6 +698,9 @@ function openSheet(id) {
       <div class="hint-line" id="l-hint" hidden></div>
       <div><span class="meta">Conjoint(s)</span><div class="spchips" id="l-sps"></div></div>
       <label>Ajouter un conjoint<select id="l-add"></select></label>
+      <div><span class="meta">Enfant(s)</span><div class="spchips" id="l-kids"></div></div>
+      <label>Relier un enfant déjà dans l'arbre<select id="l-addkid"></select></label>
+      <div class="hint-line" id="l-kid-hint" hidden></div>
       <div class="actions"><button class="btn sm" id="l-save">Enregistrer les liens</button><button class="btn danger sm" id="s-del">Supprimer cette fiche</button></div>
     </div>` : ""}`;
   $("sheet-bg").hidden = false;
@@ -641,6 +714,17 @@ function openSheet(id) {
     if (!b.dataset.armed) { b.dataset.armed = "1"; b.textContent = "Confirmer la suppression"; return; }
     deletePerson(id);
   };
+}
+function ancestors(id) {
+  const out = new Set();
+  const walk = x => ((byId(x) || {}).parents || []).forEach(a => { if (!out.has(a)) { out.add(a); walk(a); } });
+  walk(id); return out;
+}
+// Parents d'un enfant après lui avoir ajouté "p" : on garde l'autre parent, de préférence un conjoint de p
+function newParentsFor(c, p, sps) {
+  const cur = (c.parents || []).filter(x => x !== p.id && byId(x));
+  const keep = cur.find(x => sps.includes(x)) || cur[0];
+  return keep ? [keep, p.id] : [p.id];
 }
 function linkEditor(p) {
   const blocked = blockedFor(p.id);
@@ -663,6 +747,21 @@ function linkEditor(p) {
   };
   drawSps();
   add.onchange = () => { if (add.value) { sps.push(add.value); drawSps(); } };
+  // Enfants : on peut relier des personnes déjà existantes (ajoutées avant leur mère, par exemple)
+  const anc = ancestors(p.id);
+  const kidsBefore = S.persons.filter(c => (c.parents || []).includes(p.id)).map(c => c.id);
+  let kids = kidsBefore.slice();
+  const addKid = $("l-addkid");
+  const drawKids = () => {
+    $("l-kids").innerHTML = kids.length ? kids.map(id => `<span class="spchip">${esc(fullName(byId(id)))}<button type="button" data-rmk="${id}" aria-label="Retirer">×</button></span>`).join("") : '<span class="meta">Aucun</span>';
+    $("l-kids").querySelectorAll("[data-rmk]").forEach(b => b.onclick = () => { kids = kids.filter(x => x !== b.dataset.rmk); drawKids(); });
+    addKid.innerHTML = personOptions("Choisir une personne", new Set([p.id, ...anc, ...kids, ...sps]));
+    const added = kids.filter(id => !kidsBefore.includes(id));
+    const h = added.map(id => { const c = byId(id), np = newParentsFor(c, p, sps); const other = np.find(x => x !== p.id); return `${esc(c.prenom)} sera ${c.sexe === "F" ? "la fille" : c.sexe === "H" ? "le fils" : "l'enfant"} de ${esc(p.prenom)}${other ? " et de " + esc(byId(other).prenom) : ""}.`; }).join("<br>");
+    $("l-kid-hint").innerHTML = h; $("l-kid-hint").hidden = !h;
+  };
+  drawKids();
+  addKid.onchange = () => { if (addKid.value) { kids.push(addKid.value); drawKids(); } };
   $("l-save").onclick = async () => {
     if (p1.value && p1.value === p2.value) { toast("Les deux parents doivent être différents."); return; }
     const P = id => doc(db, "families", S.code, "persons", id);
@@ -673,9 +772,18 @@ function linkEditor(p) {
     sps.filter(id => !before.includes(id)).forEach(id => batch.update(P(id), { conjoints: arrayUnion(p.id) }));
     before.filter(id => !sps.includes(id) && byId(id)).forEach(id => batch.update(P(id), { conjoints: arrayRemove(p.id) }));
     if (parents.length === 2) { batch.update(P(parents[0]), { conjoints: arrayUnion(parents[1]) }); batch.update(P(parents[1]), { conjoints: arrayUnion(parents[0]) }); }
+    // enfants ajoutés : la personne devient leur 2e parent, et on relie les deux parents comme couple
+    kids.filter(id => !kidsBefore.includes(id)).forEach(id => {
+      const c = byId(id); if (!c) return;
+      const np = newParentsFor(c, p, sps);
+      batch.update(P(id), { parents: np });
+      const other = np.find(x => x !== p.id);
+      if (other && !sps.includes(other)) { batch.update(P(other), { conjoints: arrayUnion(p.id) }); batch.update(P(p.id), { conjoints: arrayUnion(other) }); }
+    });
+    kidsBefore.filter(id => !kids.includes(id) && byId(id)).forEach(id => batch.update(P(id), { parents: arrayRemove(p.id) }));
     $("l-save").disabled = true;
     try { await batch.commit(); lastAdded = p.id; closeSheet(); toast("Liens enregistrés."); }
-    catch (e) { toast("L'enregistrement a échoué. Vérifie ta connexion."); $("l-save").disabled = false; }
+    catch (e) { fail(e); $("l-save").disabled = false; }
   };
 }
 function closeSheet() { $("sheet-bg").hidden = true; }
@@ -692,7 +800,7 @@ async function deletePerson(id) {
     if (Object.keys(upd).length) batch.update(doc(db, "families", S.code, "persons", q.id), upd);
   });
   try { await batch.commit(); closeSheet(); toast("Fiche supprimée."); }
-  catch (e) { toast("La suppression a échoué. Vérifie ta connexion."); }
+  catch (e) { fail(e); }
 }
 
 /* ---------- Formulaire ---------- */
@@ -797,7 +905,7 @@ $("form").onsubmit = async e => {
   try {
     await addDoc(col("pending"), { kind, target: kind === "fix" ? $("f-target").value : "", auteur: $("f-auteur").value.trim().slice(0, 60), date: new Date().toLocaleDateString("fr-FR"), data, createdAt: serverTimestamp() });
     prepForm("new"); toast("Proposition envoyée. Elle apparaîtra après validation."); show("arbre");
-  } catch (e2) { err("L'envoi a échoué. Vérifie ta connexion internet et réessaie."); }
+  } catch (e2) { err(fbErr(e2)); }
   $("f-send").disabled = false; $("f-send").textContent = "Envoyer la proposition";
 };
 
@@ -845,7 +953,7 @@ function watchAdmins() {
       list.map(e => `<span class="spchip">${esc(e)}<button type="button" data-rm="${esc(e)}" aria-label="Retirer">×</button></span>`).join("");
     $("admins-list").querySelectorAll("[data-rm]").forEach(b => b.onclick = async () => {
       if (!b.dataset.armed) { b.dataset.armed = "1"; b.textContent = "Retirer ?"; b.style.width = "auto"; b.style.padding = "0 8px"; return; }
-      try { await deleteDoc(doc(db, "families", S.code, "admins", b.dataset.rm)); toast("Administrateur retiré."); } catch (e) { toast("Action impossible."); }
+      try { await deleteDoc(doc(db, "families", S.code, "admins", b.dataset.rm)); toast("Administrateur retiré."); } catch (e) { fail(e); }
     });
   }, () => {});
 }
@@ -855,7 +963,7 @@ $("admin-add").onsubmit = async e => {
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { toast("Adresse e-mail invalide."); return; }
   if (email === ADMIN_EMAIL) { toast("C'est déjà l'administrateur principal."); return; }
   try { await setDoc(doc(db, "families", S.code, "admins", email), { ajouteLe: serverTimestamp() }); $("admin-email").value = ""; toast("Co-administrateur ajouté."); }
-  catch (e2) { toast("Ajout impossible. As-tu bien mis à jour les règles Firestore ?"); }
+  catch (e2) { fail(e2); }
 };
 function watchPending() {
   unsubPending && unsubPending();
@@ -908,7 +1016,7 @@ function renderAdmin() {
     el.querySelector("[data-act=ok]").onclick = () => approve(q, el);
     el.querySelector("[data-act=no]").onclick = async () => {
       try { await deleteDoc(doc(db, "families", S.code, "pending", q.id)); toast("Proposition refusée."); }
-      catch (e) { toast("Action impossible. Vérifie ta connexion."); }
+      catch (e) { fail(e); }
     };
   });
 }
@@ -956,7 +1064,7 @@ async function approve(q, el) {
   }
   batch.delete(doc(db, "families", S.code, "pending", q.id));
   try { await batch.commit(); toast(q.kind === "fix" ? "Correction validée et publiée." : "Personne ajoutée à l'arbre."); }
-  catch (e) { toast("La validation a échoué. Vérifie ta connexion."); }
+  catch (e) { fail(e); }
 }
 $("export").onclick = () => {
   const data = JSON.stringify({ exporte: new Date().toISOString(), personnes: S.persons }, null, 2);
@@ -968,7 +1076,19 @@ $("export").onclick = () => {
 };
 
 /* ---------- Divers ---------- */
-let tt; function toast(m) { $("toast").textContent = m; $("toast").hidden = false; clearTimeout(tt); tt = setTimeout(() => $("toast").hidden = true, 2800); }
+let tt; function toast(m, ms) { $("toast").textContent = m; $("toast").hidden = false; clearTimeout(tt); tt = setTimeout(() => $("toast").hidden = true, ms || 2800); }
+// Message d'erreur précis selon la vraie cause renvoyée par Firebase
+function fbErr(e) {
+  console.error(e);
+  const c = (e && e.code) || "";
+  if (!navigator.onLine || c.includes("unavailable")) return "Pas de connexion internet pour le moment. Réessaie dans un instant.";
+  if (c.includes("permission-denied")) return "Firebase a refusé l'opération : les règles de sécurité ne sont pas à jour. Colle les dernières règles dans Firestore → Règles, puis Publier.";
+  if (c.includes("not-found")) return "Une des fiches concernées n'existe plus. Recharge la page puis réessaie.";
+  if (c.includes("unauthenticated")) return "Ta session admin a expiré. Reconnecte-toi dans l'onglet Admin.";
+  if (c.includes("invalid-argument")) return "Une information n'a pas pu être enregistrée (photo trop lourde ?). Réessaie sans photo.";
+  return "Erreur Firebase : " + (c || (e && e.message) || "inconnue");
+}
+const fail = e => toast(fbErr(e), 8000);
 function drawLeaves() {
   const c = $("leaves"), r = c.getBoundingClientRect(); if (!r.width) return;
   const dpr = window.devicePixelRatio || 1; c.width = r.width * dpr; c.height = r.height * dpr;
