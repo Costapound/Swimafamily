@@ -31,6 +31,8 @@ img{max-width:100%}
 /* Layout : un album de famille chaleureux. Bandeau d'accueil, onglets collants, arbre posé sur un fond doux, une couleur par branche. */
 
 /* Layout : un album de famille chaleureux. Bandeau d'accueil, onglets collants, arbre posé sur un fond doux, une couleur par branche. */
+
+/* Layout : un album de famille chaleureux. Bandeau d'accueil, onglets collants, arbre posé sur un fond doux, une couleur par branche. */
 :root{
   --bg:#F7EFE6; --surface:#FFFCF8; --sunk:#F1E5D8; --fg:#2E241D; --muted:#7A6A5D; --line:#D9C6B3;
   --accent:#B4552E; --accent-soft:#F6DDCF; --accent-fg:#FFFFFF;
@@ -253,6 +255,9 @@ button.chip:hover{border-color:var(--c);background:var(--t)}
   :root{padding:0!important}
   body::before{display:none!important}
 }
+
+.lang-btn{margin-left:auto;align-self:flex-start;appearance:none;border:1px solid rgba(255,255,255,.35);background:rgba(0,0,0,.18);color:var(--hero-fg);font:700 .85rem var(--body);padding:7px 14px;border-radius:999px;cursor:pointer}
+.lang-btn:hover{background:rgba(255,255,255,.15)}
 .gate{max-width:480px;margin-block:28px}
 .gate h2{margin-top:0}
 .foot{margin-top:18px;text-align:center}
@@ -269,6 +274,7 @@ button.chip:hover{border-color:var(--c);background:var(--t)}
   <div class="wrap">
     <div class="crest" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#FFF7EE" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22v-8"/><path d="M12 14c-3 0-6-2-6-5.5S9 3 12 3s6 2 6 5.5S15 14 12 14z"/><path d="M12 14l-3-3M12 12l3-3"/><path d="M8 22h8"/></svg></div>
     <div><h1>Swima Family</h1><p>Nos racines, nos histoires</p></div>
+    <button class="lang-btn" id="lang-btn" type="button">English</button>
   </div>
 </div>
 
@@ -601,7 +607,7 @@ $("pr-go").onclick = () => {
   if (what) { treeHTML = `<ul>${node(byId(what), new Set(), BR[what] ?? 0)}</ul>`; }
   else { treeHTML = $("tree").innerHTML; }
   const title = what ? "Branche " + esc(byId(what).prenom) : "Arbre de la famille";
-  area.innerHTML = `<div class="pr-head"><div class="pr-title">Swima Family</div><div class="pr-sub">${title} · ${new Date().toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}</div></div><div class="tree pr-tree">${treeHTML}</div>`;
+  area.innerHTML = `<div class="pr-head"><div class="pr-title">Swima Family</div><div class="pr-sub">${title} · ${new Date().toLocaleDateString(LANG === "en" ? "en-GB" : "fr-FR", { day: "numeric", month: "long", year: "numeric" })}</div></div><div class="tree pr-tree">${treeHTML}</div>`;
   area.querySelectorAll(".card").forEach(c => c.classList.remove("new", "pulse"));
   // mise à l'échelle pour tenir sur une page en paysage
   const pageMM = size === "A3" ? [420, 297] : [297, 210];
@@ -1104,6 +1110,196 @@ function drawLeaves() {
 }
 drawLeaves();
 let rz; window.addEventListener("resize", () => { clearTimeout(rz); rz = setTimeout(drawLeaves, 150); });
+
+/* ---------- Langue : français / anglais ---------- */
+const LANG_KEY = "swima-lang";
+const LANG = (() => {
+  let saved = null; try { saved = localStorage.getItem(LANG_KEY); } catch (e) {}
+  if (saved === "fr" || saved === "en") return saved;
+  return /^en/i.test(navigator.language || "") ? "en" : "fr";
+})();
+document.documentElement.lang = LANG;
+const EN = {
+  "Nos racines, nos histoires": "Our roots, our stories",
+  "Bienvenue dans la famille": "Welcome to the family",
+  "Pour voir l'arbre, entrez le code famille partagé dans le groupe WhatsApp.": "To see the tree, enter the family code shared in the WhatsApp group.",
+  "Code famille": "Family code",
+  "Entrer": "Enter",
+  "Vérification…": "Checking…",
+  "Ce code ne fonctionne pas. Vérifie-le dans le groupe WhatsApp de la famille.": "This code doesn't work. Check it in the family WhatsApp group.",
+  "L'arbre": "The tree",
+  "Proposer une info": "Suggest info",
+  "Admin": "Admin",
+  "Notre arbre": "Our family tree",
+  "Chaque branche a sa couleur. Touchez une personne pour voir sa fiche, ajouter un enfant ou proposer une correction.": "Each branch has its own colour. Tap a person to see their profile, add a child or suggest a correction.",
+  "personnes": "people", "générations": "generations", "branches": "branches",
+  "Dézoomer": "Zoom out", "Zoomer": "Zoom in",
+  "Vue d'ensemble": "Overview",
+  "Agrandir": "Full screen", "Fermer": "Close",
+  "Imprimer / PDF": "Print / PDF",
+  "Pincez avec deux doigts pour zoomer, glissez pour vous déplacer.": "Pinch with two fingers to zoom, drag to move around.",
+  "Que veux-tu imprimer ?": "What do you want to print?",
+  "Tout l'arbre": "The whole tree",
+  "Format du papier": "Paper size",
+  "A4 (imprimante classique)": "A4 (standard printer)",
+  "A3 (plus grand, plus lisible)": "A3 (larger, easier to read)",
+  "Imprimer ou enregistrer en PDF": "Print or save as PDF",
+  "Annuler": "Cancel",
+  "Pour un PDF, choisis « Enregistrer au format PDF » comme imprimante. Sur iPhone ou iPad : Imprimer, puis Partager → Enregistrer dans Fichiers.": "For a PDF, choose “Save as PDF” as the printer. On iPhone or iPad: Print, then Share → Save to Files.",
+  "Arbre de la famille": "Family tree",
+  "L'arbre est encore vide. Il commence par le grand-père : c'est la première fiche à proposer.": "The tree is still empty. It starts with the grandfather: his profile is the first one to add.",
+  "Ajouter le grand-père": "Add the grandfather",
+  "Chargement de l'arbre…": "Loading the tree…",
+  "Changer de code famille": "Change family code",
+  "Votre proposition est envoyée à l'administrateur. Elle apparaîtra dans l'arbre dès qu'il l'aura validée.": "Your suggestion is sent to the administrator. It will appear in the tree once approved.",
+  "Type de proposition": "Type of suggestion",
+  "Ajouter une personne": "Add a person",
+  "Corriger une fiche": "Correct a profile",
+  "Fiche à corriger": "Profile to correct",
+  "Choisir la personne": "Choose the person",
+  "Prénom": "First name", "Nom": "Last name", "Sexe": "Sex",
+  "Homme": "Male", "Femme": "Female", "Non précisé": "Not specified",
+  "Où vit-il ou elle aujourd'hui ?": "Where does he or she live today?",
+  "ville et pays": "city and country",
+  "ex. Lille, France": "e.g. Dar es Salaam, Tanzania",
+  "ex. 1974": "e.g. 1974",
+  "Naissance": "Birth", "année ou date": "year or date",
+  "Décès": "Death", "si concerné": "if applicable",
+  "Lieu de naissance": "Place of birth", "facultatif, si connu": "optional, if known",
+  "Lieu de vie": "Lives in",
+  "Liens familiaux": "Family links",
+  "Enfant de": "Child of", "et de": "and of",
+  "Marié(e) à": "Married to",
+  "Ajouter un conjoint": "Add a spouse",
+  "Personne / inconnu": "Nobody / unknown",
+  "Personne": "Nobody",
+  "Autres personnes": "Other people",
+  "Choisis l'autre parent dans la liste « et de ».": "Choose the other parent in the “and of” list.",
+  ". Choisis l'autre parent dans la liste « et de ».": ". Choose the other parent in the “and of” list.",
+  "Déjà marié(e) à :": "Already married to:",
+  "Souvenir ou anecdote": "Memory or story",
+  "facultatif": "optional",
+  "Photo": "Photo",
+  "Votre prénom": "Your first name",
+  "pour que l'administrateur sache qui propose": "so the administrator knows who is suggesting",
+  "Envoyer la proposition": "Send suggestion",
+  "Envoi…": "Sending…",
+  "Choisis la fiche à corriger.": "Choose the profile to correct.",
+  "Le prénom est obligatoire.": "First name is required.",
+  "Indique ton prénom pour que l'administrateur sache qui propose.": "Enter your first name so the administrator knows who is suggesting.",
+  "Indique s'il s'agit d'un homme ou d'une femme.": "Please say whether this is a man or a woman.",
+  "Les deux parents doivent être des personnes différentes.": "The two parents must be different people.",
+  "Les deux parents doivent être différents.": "The two parents must be different.",
+  "Proposition envoyée. Elle apparaîtra après validation.": "Suggestion sent. It will appear after approval.",
+  "Vit à": "Lives in", "Vivait à": "Lived in", "Vie": "Life",
+  "Né à": "Born in", "Née à": "Born in", "Né(e) à": "Born in",
+  "Fils de": "Son of", "Fille de": "Daughter of",
+  "Époux de": "Husband of", "Épouse de": "Wife of",
+  "Enfants": "Children",
+  "Qu'Allah lui fasse miséricorde": "May Allah have mercy on them",
+  "Ajouter un enfant": "Add a child",
+  "Ajouter une épouse": "Add a wife",
+  "Ajouter un époux": "Add a husband",
+  "Proposer une correction": "Suggest a correction",
+  "Sexe et liens familiaux": "Sex and family links",
+  "· admin, appliqué tout de suite": "· admin, applied immediately",
+  "Conjoint(s)": "Spouse(s)", "Aucun": "None",
+  "Enfant(s)": "Child(ren)",
+  "Relier un enfant déjà dans l'arbre": "Link a child already in the tree",
+  "Choisir une personne": "Choose a person",
+  "Enregistrer les liens": "Save links",
+  "Supprimer cette fiche": "Delete this profile",
+  "Confirmer la suppression": "Confirm deletion",
+  "Retirer": "Remove", "Retirer ?": "Remove?",
+  "Liens enregistrés.": "Links saved.",
+  "Fiche supprimée.": "Profile deleted.",
+  "Espace administrateur": "Admin area",
+  "Cet espace est réservé à l'administrateur de l'arbre. Connecte-toi avec ton compte Google.": "This area is for the tree administrator. Sign in with your Google account.",
+  "Se connecter avec Google": "Sign in with Google",
+  "Se déconnecter": "Sign out",
+  "Connexion annulée ou impossible.": "Sign-in cancelled or not possible.",
+  "Exporter l'arbre": "Export the tree",
+  "Export téléchargé.": "Export downloaded.",
+  "Propositions en attente": "Pending suggestions",
+  "Vérifie, corrige si besoin, puis valide. Rien n'apparaît dans l'arbre sans ton accord.": "Check, correct if needed, then approve. Nothing appears in the tree without your approval.",
+  "Aucune proposition en attente. Tout est à jour.": "No pending suggestions. Everything is up to date.",
+  "Correction": "Correction", "Nouvelle personne": "New person",
+  "Fiche :": "Profile:", "introuvable": "not found",
+  "La fiche visée n'existe plus. Tu peux refuser cette proposition.": "This profile no longer exists. You can reject this suggestion.",
+  "Aucun changement dans les infos.": "No change in the details.",
+  "Prénom :": "First name:", "Nom :": "Last name:", "Sexe :": "Sex:", "Lieu de vie :": "Lives in:",
+  "Naissance :": "Birth:", "Décès :": "Death:", "Lieu de naissance :": "Place of birth:", "Anecdote :": "Story:",
+  "Photo :": "Photo:", "Parents :": "Parents:", "Nouveau conjoint :": "New spouse:",
+  "nouvelle photo jointe": "new photo attached",
+  "Photo jointe": "Photo attached",
+  "vide": "empty", "inconnus": "unknown",
+  "Anecdote": "Story",
+  "Valider": "Approve", "Refuser": "Reject",
+  "Proposition refusée.": "Suggestion rejected.",
+  "La fiche n'existe plus.": "The profile no longer exists.",
+  "Correction validée et publiée.": "Correction approved and published.",
+  "Personne ajoutée à l'arbre.": "Person added to the tree.",
+  "Co-administrateurs": "Co-administrators",
+  "Ils pourront valider ou refuser les propositions et modifier les liens familiaux, comme toi. Seul toi peux ajouter ou retirer un co-administrateur. Il leur faut un compte Google.": "They can approve or reject suggestions and edit family links, like you. Only you can add or remove a co-administrator. They need a Google account.",
+  "adresse Gmail": "Gmail address",
+  "Ajouter": "Add",
+  "principal": "main",
+  "Administrateur retiré.": "Administrator removed.",
+  "Adresse e-mail invalide.": "Invalid e-mail address.",
+  "C'est déjà l'administrateur principal.": "This is already the main administrator.",
+  "Co-administrateur ajouté.": "Co-administrator added.",
+  "Pas de connexion internet pour le moment. Réessaie dans un instant.": "No internet connection right now. Try again in a moment.",
+  "Firebase a refusé l'opération : les règles de sécurité ne sont pas à jour. Colle les dernières règles dans Firestore → Règles, puis Publier.": "Firebase refused the operation: the security rules are out of date.",
+  "Une des fiches concernées n'existe plus. Recharge la page puis réessaie.": "One of the profiles no longer exists. Reload the page and try again.",
+  "Ta session admin a expiré. Reconnecte-toi dans l'onglet Admin.": "Your admin session expired. Sign in again in the Admin tab.",
+  "Une information n'a pas pu être enregistrée (photo trop lourde ?). Réessaie sans photo.": "Some information could not be saved (photo too large?). Try again without a photo.",
+  "Décédé(e)": "Deceased"
+};
+const ord = n => n + (n % 10 === 1 && n % 100 !== 11 ? "st" : n % 10 === 2 && n % 100 !== 12 ? "nd" : n % 10 === 3 && n % 100 !== 13 ? "rd" : "th");
+const EN_RX = [
+  [/^Branche (.+)$/, (m, a) => `${a} branch`],
+  [/^Aller à (.+)$/, (m, a) => `Go to ${a}`],
+  [/^(\d+)(?:re|e) épouse$/, (m, n) => `${ord(+n)} wife`],
+  [/^Conjoint\(s\) de (.+)$/, (m, a) => `Spouse(s) of ${a}`],
+  [/^(.+) est marié\(e\) à :$/, (m, a) => `${a} is married to:`],
+  [/^(.+) n'a pas encore de conjoint enregistré\. Si tu choisis l'autre parent, ils seront reliés comme couple\.$/, (m, a) => `${a} has no spouse recorded yet. If you choose the other parent, they will be linked as a couple.`],
+  [/^(.+) sera (le fils|la fille|l'enfant) de (.+?)(?: et de (.+))?\.$/, (m, a, r, b, c) => `${a} will be the ${r === "le fils" ? "son" : r === "la fille" ? "daughter" : "child"} of ${b}${c ? " and " + c : ""}.`],
+  [/^Proposé par (.+) le (.+)$/, (m, a, d) => `Suggested by ${a} on ${d}`],
+  [/^Connecté : (\S+) \(administrateur principal\)$/, (m, a) => `Signed in: ${a} (main administrator)`],
+  [/^Connecté : (\S+) \(co-administrateur\)$/, (m, a) => `Signed in: ${a} (co-administrator)`],
+  [/^Le compte (.+) n'est pas administrateur de l'arbre\.$/, (m, a) => `The account ${a} is not an administrator of the tree.`],
+  [/^Erreur Firebase : (.+)$/, (m, a) => `Firebase error: ${a}`],
+  [/^(.+) · (.+)$/, null]
+];
+function tr(s) {
+  const k = s.trim(); if (!k) return null;
+  if (EN[k] !== undefined) return s.replace(k, EN[k]);
+  for (const [rx, fn] of EN_RX) { if (!fn) continue; const m = k.match(rx); if (m) return s.replace(k, fn(...m)); }
+  return null;
+}
+const ATTRS = ["placeholder", "aria-label", "title", "label"];
+function translateTree(root) {
+  if (root.nodeType === 3) { const t = tr(root.nodeValue); if (t !== null && t !== root.nodeValue) root.nodeValue = t; return; }
+  if (root.nodeType !== 1) return;
+  if (root.tagName === "SCRIPT" || root.tagName === "STYLE") return;
+  ATTRS.forEach(a => { const v = root.getAttribute(a); if (v) { const t = tr(v); if (t !== null && t !== v) root.setAttribute(a, t); } });
+  const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT);
+  let n; while ((n = w.nextNode())) {
+    if (n.nodeType === 3) { const t = tr(n.nodeValue); if (t !== null && t !== n.nodeValue) n.nodeValue = t; }
+    else ATTRS.forEach(a => { const v = n.getAttribute(a); if (v) { const t = tr(v); if (t !== null && t !== v) n.setAttribute(a, t); } });
+  }
+}
+if (LANG === "en") {
+  translateTree(document.body);
+  new MutationObserver(ms => ms.forEach(m => {
+    if (m.type === "characterData") translateTree(m.target);
+    else if (m.type === "attributes") translateTree(m.target);
+    else m.addedNodes.forEach(translateTree);
+  })).observe(document.body, { childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ATTRS });
+}
+$("lang-btn").textContent = LANG === "en" ? "Français" : "English";
+$("lang-btn").setAttribute("aria-label", LANG === "en" ? "Passer en français" : "Switch to English");
+$("lang-btn").onclick = () => { try { localStorage.setItem(LANG_KEY, LANG === "en" ? "fr" : "en"); } catch (e) {} location.reload(); };
 </script>
 </body>
 </html>
